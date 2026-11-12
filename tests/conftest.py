@@ -77,6 +77,69 @@ def catalog_seed(application):
 
 
 @pytest.fixture
+def sale_seed(application):
+    """Crear clientes y libros propios; retirar sólo sus ventas y ese catálogo."""
+    from contextlib import asynccontextmanager
+    from types import SimpleNamespace
+    import uuid
+    from sqlalchemy import text
+
+    @asynccontextmanager
+    async def group():
+        clientes: list[int] = []
+        libros: list[int] = []
+        editoriales: list[int] = []
+
+        async def cliente(nombre: str, email: str) -> int:
+            async with application.state.engine.begin() as conn:
+                result = await conn.execute(
+                    text('INSERT INTO cliente (nombre, email) VALUES (:nombre, :email) RETURNING id'),
+                    {'nombre': nombre, 'email': email},
+                )
+                id_ = result.scalar_one()
+                clientes.append(id_)
+                return id_
+
+        async def libro(titulo: str, precio: str, isbn: str | None = None) -> int:
+            if not editoriales:
+                async with application.state.engine.begin() as conn:
+                    result = await conn.execute(text(
+                        "INSERT INTO editorial (nombre, pais) VALUES ('Ventas seed C05', 'AR') RETURNING id"
+                    ))
+                    editoriales.append(result.scalar_one())
+            async with application.state.engine.begin() as conn:
+                result = await conn.execute(
+                    text('INSERT INTO libro (isbn, titulo, precio, stock, editorial_id) '
+                         'VALUES (:isbn, :titulo, :precio, 0, :editorial) RETURNING id'),
+                    {'isbn': isbn or f'venta-seed-{uuid.uuid4().hex}', 'titulo': titulo,
+                     'precio': precio, 'editorial': editoriales[0]},
+                )
+                id_ = result.scalar_one()
+                libros.append(id_)
+                return id_
+
+        try:
+            yield SimpleNamespace(cliente=cliente, libro=libro)
+        finally:
+            async with application.state.engine.begin() as conn:
+                if clientes:
+                    await conn.execute(text(
+                        'DELETE FROM renglon_venta WHERE venta_id IN '
+                        '(SELECT id FROM venta WHERE cliente_id = ANY(:ids))'
+                    ), {'ids': clientes})
+                    await conn.execute(text('DELETE FROM venta WHERE cliente_id = ANY(:ids)'), {'ids': clientes})
+                    await conn.execute(text('DELETE FROM perfil_cliente WHERE cliente_id = ANY(:ids)'), {'ids': clientes})
+                    await conn.execute(text('DELETE FROM cliente WHERE id = ANY(:ids)'), {'ids': clientes})
+                if libros:
+                    await conn.execute(text('DELETE FROM libro_autor WHERE libro_id = ANY(:ids)'), {'ids': libros})
+                    await conn.execute(text('DELETE FROM libro WHERE id = ANY(:ids)'), {'ids': libros})
+                if editoriales:
+                    await conn.execute(text('DELETE FROM editorial WHERE id = ANY(:ids)'), {'ids': editoriales})
+
+    return group
+
+
+@pytest.fixture
 def client_seed(application):
     """Sembrar clientes propios y retirar sólo esas filas y sus perfiles."""
     from contextlib import asynccontextmanager

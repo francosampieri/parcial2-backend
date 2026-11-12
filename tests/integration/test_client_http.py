@@ -2,7 +2,7 @@
 import pytest
 
 
-def test_openapi_clientes_publica_solo_las_cuatro_rutas_async():
+def test_openapi_clientes_y_ventas_por_cliente_publican_rutas_async():
     import inspect
 
     from app.main import create_app
@@ -21,6 +21,7 @@ def test_openapi_clientes_publica_solo_las_cuatro_rutas_async():
         ('/clientes/{id}', 'get'),
         ('/clientes/{id}', 'patch'),
         ('/clientes/{id}/perfil', 'post'),
+        ('/clientes/{id}/ventas', 'get'),
     }
     assert all(
         inspect.iscoroutinefunction(route.endpoint)

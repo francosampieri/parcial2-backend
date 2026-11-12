@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 y C-02 implementados, verificados y archivados; C-03 `catalogo-y-autorias` archivado con 14/18 tareas marcadas (cuatro desviaciones TDD documentadas), aunque la funcionalidad pasó 205 pruebas; C-04 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 14/18 tareas marcadas (cuatro desviaciones TDD documentadas), aunque la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -188,7 +188,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
   - [07 — Flujos principales](knowledge-base/07_flujos_principales.md) §Flujos 3 y 4
 
 ### [C-05] `ventas-y-comprobantes`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado, verificado y [archivado](openspec/changes/archive/2026-11-12-ventas-y-comprobantes/) (12/11/2026); 20/20 tareas, specs `ventas-http` y `clientes-http` sincronizadas y 269 pruebas pasaron. Evidencia: [TDD-C05](docs/evidencia/TDD-C05.md).
 - **Scope**:
   - Crear schemas/services/router de ventas e implementar POST/GET /ventas/, GET /ventas/{id} y GET /clientes/{id}/ventas. Los listados son paginados y la consulta por cliente inexistente responde 404.
   - Aceptar cliente_id y renglones con libro_id/cantidad, mínimo uno y sin repetir libro; no aceptar precio, total ni fecha como datos de la venta. Libro/cliente inexistente al crear devuelve 409 propio; DTO inválido, 422.

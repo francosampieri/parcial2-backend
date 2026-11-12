@@ -125,12 +125,18 @@ def create_cluster() -> PrivatePostgres:
         cluster.run("initdb", "-D", str(directory / "data"), "-U", "foundation_test", "--auth=scram-sha-256", "--encoding=UTF8", "--locale=C", f"--pwfile={password_file}")
         password_file.unlink()
         with (directory / "data" / "postgresql.conf").open("a") as config:
-            config.write(f"\nlisten_addresses = '127.0.0.1'\nport = {port}\n")
+            config.write(
+                f"\nlisten_addresses = '127.0.0.1'\nport = {port}\n"
+                "unix_socket_directories = ''\n"
+            )
         cluster.start()
         cluster.run("createdb", "-h", "127.0.0.1", "-p", str(port), "-U", "foundation_test", "libreria_test", password=True)
         result = cluster.run("psql", "-h", "127.0.0.1", "-p", str(port), "-U", "foundation_test", "-d", "libreria_test", "-Atc", "SELECT current_database(), current_setting('server_version'), inet_server_addr(), inet_server_port()", password=True)
-        assert "libreria_test|17." in result and f"127.0.0.1|{port}" in result
-        print("PostgreSQL 17 privado: conexión SQL verificada")
+        database, version, address, connected_port = result.strip().split("|")
+        assert database == "libreria_test"
+        assert int(version.split(".")[0]) >= 17
+        assert (address, connected_port) == ("127.0.0.1", str(port))
+        print(f"PostgreSQL {version} privado: conexión SQL verificada")
         return cluster
     except BaseException:
         cluster.cleanup()

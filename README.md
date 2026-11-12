@@ -98,7 +98,7 @@ petición → router → Depends(get_session) → service → AsyncSession → P
 
 Antes de atender, se importan los modelos registrados y se ejecuta `create_all` con el motor async. Es una operación **aditiva**: crea tablas faltantes, no migra columnas de tablas existentes ni borra datos. Salud no necesita una tabla propia. Si una tabla existente es incompatible con el modelo, `create_all` no la actualiza: hay que analizar una migración antes de intervenir esa base. El arranque no ejecuta seed ni reset y no se implementan migraciones en este change.
 
-La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Salud, catálogo y clientes exponen operaciones; ventas se incorpora en C-05.
+La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Salud, catálogo, clientes y ventas exponen operaciones; la validación integral y los datos iniciales se incorporan en C-06.
 
 ## Modelo de datos
 
@@ -149,7 +149,7 @@ La relación venta/renglones se describe como **composición**: el renglón pert
 
 ## Pruebas
 
-La API acepta PostgreSQL 16+, mientras que el helper de integración actual prepara y verifica **PostgreSQL 17**. Para esa suite se requieren sus binarios `postgres`, `initdb`, `pg_ctl`, `createdb` y `psql`; no hace falta tener un servicio PostgreSQL corriendo. La variable real del helper es `PG_BIN`, que señala su directorio. En una instalación Windows habitual:
+La API acepta PostgreSQL 16+, mientras que el helper de integración prepara su propio clúster privado y verifica **PostgreSQL 17 o superior** (el proyecto se validó originalmente con 17). Para esa suite se requieren sus binarios `postgres`, `initdb`, `pg_ctl`, `createdb` y `psql`; no hace falta tener un servicio PostgreSQL corriendo. La variable real del helper es `PG_BIN`, que señala su directorio. En una instalación Windows habitual:
 
 ```powershell
 $env:PG_BIN = Join-Path $env:ProgramFiles 'PostgreSQL\17\bin'
@@ -161,6 +161,8 @@ Si PostgreSQL está en otra ubicación, ajustar únicamente `PG_BIN` al director
 ```sh
 python -m pytest -q
 ```
+
+El clúster privado escucha sólo en `127.0.0.1` y desactiva los sockets Unix, así que no depende de que exista `/run/postgresql`. En Linux, una configuración típica es `PG_BIN=/usr/bin python -m pytest -q`.
 
 pytest es el runner: descubre y ejecuta las pruebas; pytest-asyncio ejecuta las funciones async en modo estricto, con un loop por caso. Aplicación, cliente y conexiones async de cada caso permanecen en ese mismo loop. HTTPX hace peticiones ASGI dentro del proceso y LifespanManager ejecuta explícitamente startup/shutdown; HTTPX por sí solo no inicia el lifespan.
 
@@ -249,5 +251,64 @@ Un **cliente** guarda nombre y email para las operaciones de la librería; no re
 
 `PATCH /clientes/{id}` modifica solamente los campos enviados. Por ejemplo, `{"nombre":"Ana María Pérez"}` cambia el nombre y conserva el email y el perfil. El service usa `exclude_unset=True` para distinguir **campo omitido** de **campo enviado**. `{"email":null}` y `{"nombre":null}` se rechazan con **422**; un campo desconocido también. Si el email nuevo ya existe, responde **409** con rollback y conserva los datos anteriores. Un cliente inexistente responde **404**.
 
-Cada cliente puede tener **como máximo un perfil**. `perfil_cliente.cliente_id` es una FK a `cliente.id` y tiene una restricción `UNIQUE`; un cliente sin perfil no tiene fila en esa tabla. La ruta `POST /clientes/{id}/perfil` forma parte de C-04: el ID del cliente se toma de la URL y el cuerpo contiene `telefono` y `direccion`, por ejemplo `{"telefono":"1123456789","direccion":"Calle 123"}`. Responde **201** al crear; **404** si el cliente no existe; **409** si ya tiene perfil; y **422** para campos desconocidos o incompletos. Editar o borrar un perfil y consultar las ventas del cliente no pertenecen a estas cuatro rutas; la consulta de ventas se incorpora en C-05.
+Cada cliente puede tener **como máximo un perfil**. `perfil_cliente.cliente_id` es una FK a `cliente.id` y tiene una restricción `UNIQUE`; un cliente sin perfil no tiene fila en esa tabla. La ruta `POST /clientes/{id}/perfil` forma parte de C-04: el ID del cliente se toma de la URL y el cuerpo contiene `telefono` y `direccion`, por ejemplo `{"telefono":"1123456789","direccion":"Calle 123"}`. Responde **201** al crear; **404** si el cliente no existe; **409** si ya tiene perfil; y **422** para campos desconocidos o incompletos. La consulta de ventas del cliente se describe en la sección de ventas.
+
+## Ventas y comprobantes (C-05)
+
+Una **venta** registra un hecho: el cliente que compró y los renglones con el libro y la cantidad. No se edita ni se borra, no descuenta stock y no procesa pagos. La cabecera y sus renglones se crean juntos.
+
+`POST /ventas/` recibe el ID de un cliente existente y al menos un renglón. Cada renglón lleva sólo `libro_id` y `cantidad`, por ejemplo:
+
+```http
+POST /ventas/
+Content-Type: application/json
+
+{
+  "cliente_id": 2,
+  "renglones": [
+    {"libro_id": 1, "cantidad": 2},
+    {"libro_id": 4, "cantidad": 1}
+  ]
+}
+```
+
+El precio, el subtotal, el total y la fecha **no viajan en la petición**: los calcula el servidor. Enviarlos, junto con `id` o cualquier campo desconocido, responde **422**. También son **422** una lista vacía, un libro repetido o una cantidad menor o igual que cero.
+
+El service lee el cliente y todos los libros en una consulta agrupada, copia el precio vigente de cada libro y calcula `subtotal = cantidad × precio_unitario` y `total` como la suma de los subtotales. Los importes usan `Decimal` y las columnas `NUMERIC`; la fecha se genera con zona horaria. Si el cliente o alguno de los libros no existe, responde **409** con un mensaje propio y hace rollback: no queda una venta parcial. Un fallo de integridad al confirmar también se traduce a 409 sin mostrar SQL ni trazas.
+
+Por ejemplo, dos ejemplares de un libro de 25000.00 y uno de 27000.00 producen:
+
+```json
+{
+  "id": 2,
+  "fecha": "2026-11-12T15:00:00Z",
+  "total": "77000.00",
+  "cliente": {"id": 2, "nombre": "Tomás Ríos", "email": "tomas@example.com"},
+  "renglones": [
+    {"libro_id": 1, "titulo": "Rayuela", "cantidad": 2, "precio_unitario": "25000.00", "subtotal": "50000.00"},
+    {"libro_id": 4, "titulo": "Respiración artificial", "cantidad": 1, "precio_unitario": "27000.00", "subtotal": "27000.00"}
+  ]
+}
+```
+
+El precio copiado es **histórico**: si después se modifica el precio del libro, la venta conserva el importe y el subtotal originales. El renglón no anida la venta ni el cliente completo; así se evita una respuesta recursiva.
+
+### Lecturas de ventas
+
+| Método y ruta | Respuesta |
+|---|---|
+| `GET /ventas/` | Lista paginada de resúmenes: `id`, `fecha`, `total` y `cliente` |
+| `GET /ventas/{id}` | Detalle con cliente y renglones con título, precio y subtotal |
+| `GET /clientes/{id}/ventas` | Lista paginada de las ventas de ese cliente |
+
+Los listados ordenan por `id` y aceptan `limit` entre 1 y 100 (por defecto 20) y `offset` desde 0; valores fuera de rango responden **422**. No incluyen los renglones para no multiplicar filas: el detalle es la ruta que los expone. Una lista vacía es `[]` con **200** cuando el cliente existe. `GET /clientes/{id}/ventas` responde **404** si el cliente no existe; un ID de ruta no entero responde **422** en cualquier ruta de detalle.
+
+Las lecturas precargan el cliente y, en el detalle, los renglones con su libro. El número de consultas no crece con la cantidad de renglones: no hay carga perezosa durante la serialización.
+
+### Aviso de comprobante
+
+Después de confirmar la venta, el handler agenda con `BackgroundTasks` una función async que espera `await asyncio.sleep(0.5)` y escribe el comprobante en el log. La tarea se ejecuta después de enviar la respuesta y no recibe la sesión de la petición, que ya se cerró; sólo usa el `venta_id` y el total. Por eso no retrasa el **201** ni bloquea otras peticiones.
+
+Ese aviso es una simulación académica dentro del proceso, no una cola persistente: si el proceso se reinicia antes de terminar, el mensaje puede perderse. Una cola externa (por ejemplo, un worker con Redis) sería la alternativa para garantizar entrega, pero queda fuera del alcance del parcial.
+
 
