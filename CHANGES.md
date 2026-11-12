@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 `foundation-setup` implementado, verificado y archivado; C-02 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 y C-02 implementados, verificados y archivados; C-03 `catalogo-y-autorias` archivado con 14/18 tareas marcadas (cuatro desviaciones TDD documentadas), aunque la funcionalidad pasó 205 pruebas; C-04 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -129,7 +129,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
   - [10 — Preguntas abiertas](knowledge-base/10_preguntas_abiertas.md) §Preguntas abiertas priorizadas, PA-03/PA-07
 
 ### [C-02] `core-domain-models`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado, verificado y [archivado](openspec/changes/archive/2026-11-12-core-domain-models/) (12/11/2026); specs sincronizadas. Evidencia: [TDD-C02](docs/evidencia/TDD-C02.md), con desviaciones de Strict TDD documentadas.
 - **Scope**:
   - Declarar las nueve tablas con nombres y columnas exactos: Editorial, Genero, Autor, Libro, LibroAutor, Cliente, PerfilCliente, Venta y RenglonVenta, dentro de sus módulos obligatorios.
   - Implementar UNIQUE de nombre editorial/género, ISBN, email y cliente_id del perfil; PK compuesta de LibroAutor, todos los CHECK, FK e índices. Representar dinero con Decimal/NUMERIC y fecha con zona horaria.
@@ -152,7 +152,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
 > C-03 y C-04 pueden implementarse en paralelo una vez definido C-02. C-05 integra ambas capacidades. Las pruebas relevantes se escriben dentro de cada change, no se postergan a C-06.
 
 ### [C-03] `catalogo-y-autorias`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[~]` archivado con advertencia — 14/18 tareas marcadas; [archivo OpenSpec](openspec/changes/archive/2026-11-12-catalogo-y-autorias/) y [evidencia TDD](docs/evidencia/TDD-C03.md). Cuatro tareas permanecen abiertas por RED específico omitido; 205 pruebas funcionales pasaron.
 - **Scope**:
   - Crear schemas Create/Update/Read y services/routers de editoriales, géneros, autores y libros, separados de los modelos de tabla; registrar sus routers.
   - Implementar las 16 operaciones: POST/GET /editoriales/, GET/PATCH /editoriales/{id}, GET /editoriales/{id}/libros; POST/GET /generos/, GET /generos/{id}/libros; POST /autores/, GET/PATCH /autores/{id}, GET /autores/{id}/libros; POST/GET /libros/, GET/PATCH /libros/{id}.
@@ -268,4 +268,5 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
   - [07 — Flujos principales](knowledge-base/07_flujos_principales.md) §Flujo 7: Publicación y actualización
   - [08 — Arquitectura propuesta](knowledge-base/08_arquitectura_propuesta.md) §Docker y red, Verificación y evidencias y Documentación y paquete de entrega
   - [10 — Preguntas abiertas](knowledge-base/10_preguntas_abiertas.md) §PA-01/PA-02/PA-09
+
 

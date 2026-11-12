@@ -52,3 +52,25 @@ async def domain_session(application):
             yield session
         if transaction.is_active:
             await transaction.rollback()
+
+
+@pytest.fixture
+def catalog_seed(application):
+    """Crear editoriales propias y retirar sólo los identificadores creados."""
+    from contextlib import asynccontextmanager
+    from sqlalchemy import text
+
+    @asynccontextmanager
+    async def group():
+        ids = []
+        async def create(name):
+            async with application.state.engine.begin() as conn:
+                result = await conn.execute(text("INSERT INTO editorial (nombre, pais) VALUES (:name, 'AR') RETURNING id"), {"name": name})
+                ids.append(result.scalar_one())
+        try:
+            yield create
+        finally:
+            async with application.state.engine.begin() as conn:
+                for id_ in ids:
+                    await conn.execute(text("DELETE FROM editorial WHERE id = :id"), {"id": id_})
+    return group

@@ -14,6 +14,10 @@ from app.core.database import (
     is_database_unavailable,
 )
 from app.modules.health.router import router as health_router
+from app.modules.editoriales.router import router as editoriales_router
+from app.modules.generos.router import router as generos_router
+from app.modules.autores.router import router as autores_router
+from app.modules.libros.router import router as libros_router
 
 
 @asynccontextmanager
@@ -45,6 +49,10 @@ def create_app() -> FastAPI:
     application = FastAPI(title="Librería — totones", lifespan=lifespan)
     application.add_exception_handler(DatabaseUnavailableError, database_unavailable_response)
     application.include_router(health_router)
+    application.include_router(editoriales_router)
+    application.include_router(generos_router)
+    application.include_router(autores_router)
+    application.include_router(libros_router)
     return application
 
 

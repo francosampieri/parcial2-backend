@@ -1,7 +1,7 @@
 # Librería — totones (2PRO1)
 
 API académica de Franco Sampieri, Mauro Di Pietro, Tomas Martinez y Renzo Victoria.
-C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; los endpoints de negocio se desarrollan en los siguientes changes.
+C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo.
 
 ## Preparación local
 
@@ -98,7 +98,7 @@ petición → router → Depends(get_session) → service → AsyncSession → P
 
 Antes de atender, se importan los modelos registrados y se ejecuta `create_all` con el motor async. Es una operación **aditiva**: crea tablas faltantes, no migra columnas de tablas existentes ni borra datos. Salud no necesita una tabla propia. Si una tabla existente es incompatible con el modelo, `create_all` no la actualiza: hay que analizar una migración antes de intervenir esa base. El arranque no ejecuta seed ni reset y no se implementan migraciones en este change.
 
-La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Actualmente sólo salud tiene operaciones públicas; el CRUD de negocio se implementará en los próximos changes.
+La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Salud y catálogo exponen operaciones; clientes y ventas se desarrollan en changes posteriores.
 
 ## Modelo de datos
 
@@ -116,7 +116,7 @@ Una clase SQLModel declarada con `table=True` describe una tabla; una instancia 
 | ventas | `Venta` → `venta` | `id`, `cliente_id`, `fecha`, `total` |
 | ventas | `RenglonVenta` → `renglon_venta` | `id`, `venta_id`, `libro_id`, `cantidad`, `precio_unitario` |
 
-Los textos usan `str` y las cantidades `int`. Los importes se trabajan con `Decimal`: precios `NUMERIC(10,2)` y total `NUMERIC(12,2)`, con dos cifras decimales almacenadas. Esto evita usar `float` para dinero. PostgreSQL puede redondear entradas con más de dos decimales; la validación de entradas se definirá en los contratos posteriores. La fecha de venta usa `datetime` con zona horaria. En las columnas persistidas, sólo `libro.genero_id` admite `NULL`. Los `id` simples pueden ser `None` en un objeto nuevo antes de que PostgreSQL los genere; no son nulos en la fila guardada.
+Los textos usan `str` y las cantidades `int`. Los importes se trabajan con `Decimal`: precios `NUMERIC(10,2)` y total `NUMERIC(12,2)`, con dos cifras decimales almacenadas. Esto evita usar `float` para dinero. PostgreSQL puede redondear entradas con más de dos decimales; la API de libros rechaza esos precios para evitar un redondeo inesperado. La fecha de venta usa `datetime` con zona horaria. En las columnas persistidas, sólo `libro.genero_id` admite `NULL`. Los `id` simples pueden ser `None` en un objeto nuevo antes de que PostgreSQL los genere; no son nulos en la fila guardada.
 
 ### Claves, restricciones e índices
 
@@ -180,6 +180,64 @@ Strict TDD organiza el desarrollo: prueba conductual RED, implementación mínim
 
 ## Continuación y fuentes
 
-Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Catálogo y clientes continúan en C-03/C-04; ventas en C-05; validación integral/seed en C-06; contenedor en C-07 y publicación revisada en C-08. La entrega final es `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1.
+Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Clientes continúa en C-04; ventas en C-05; validación integral/seed en C-06; contenedor en C-07 y publicación revisada en C-08. La entrega final es `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1.
 
 La evidencia real de C-01 y sus ciclos TDD está en [TDD-C01](docs/evidencia/TDD-C01.md): 51 pruebas pasaron en PostgreSQL17 privado, con servidor Uvicorn real y recuperación tras caída de la base. La disponibilidad de wheels Windows/musl fue comprobada; el build Alpine se verifica en C-07.
+## Operaciones del catálogo
+
+`POST /editoriales/` recibe un objeto como `{"nombre":"Sur","pais":"Argentina"}`. El DTO `EditorialCreate` declara qué campos acepta la API y rechaza campos adicionales, incluido `id`; ese identificador lo genera la base. Una creación correcta responde **201** con la editorial creada. Si el nombre ya existe, PostgreSQL rechaza la escritura y el servicio revierte la transacción, devolviendo **409** sin detalles internos.
+
+`GET /editoriales/` lista editoriales en orden de ID y acepta `limit` (1 a 100, por defecto 20) y `offset` (desde 0). `GET /editoriales/{id}` consulta una editorial. Para modificar sólo el país se puede enviar `PATCH /editoriales/{id}` con `{"pais":"Uruguay"}`: el nombre omitido se conserva. En estos campos `null` se rechaza con 422; un ID inexistente devuelve 404 y un nombre repetido devuelve 409.
+
+`GET /editoriales/{id}/libros` lista los libros de esa editorial con la misma paginación. Devuelve una lista vacía para una editorial sin libros y 404 si la editorial no existe. La consulta precarga editorial y género de cada libro.
+
+`POST /autores/` recibe `nombre` y `nacionalidad`; acepta autores con nombres iguales. `GET /autores/{id}` consulta un autor y `PATCH /autores/{id}` modifica solamente los campos enviados. En el PATCH no se acepta `null` ni campos no declarados.
+
+`GET /autores/{id}/libros` devuelve una lista paginada con el rol y orden de cada participación del autor; dos autores pueden compartir el mismo orden.
+
+`POST /libros/` recibe ISBN, título, precio, stock, `editorial_id`, `genero_id` opcional y una lista `autores` con `autor_id`, `rol` y `orden`. Se exige al menos un autor, según la interpretación del diagrama que aprobó el grupo. El precio debe ser positivo, representable en NUMERIC(10,2) y tener como máximo dos decimales; así no se guarda un importe redondeado sin aviso. El libro y sus autorías se confirman juntos; si un ID no existe o se repite el ISBN o el autor, la API hace rollback y responde 409.
+
+### Rutas disponibles
+
+| Recurso | Método y ruta | Propósito |
+|---|---|---|
+| Editoriales | `POST /editoriales/`, `GET /editoriales/` | Crear y listar |
+| Editoriales | `GET /editoriales/{id}`, `PATCH /editoriales/{id}` | Consultar y modificar datos enviados |
+| Editoriales | `GET /editoriales/{id}/libros` | Listar sus libros |
+| Géneros | `POST /generos/`, `GET /generos/` | Crear y listar |
+| Géneros | `GET /generos/{id}/libros` | Listar sus libros |
+| Autores | `POST /autores/`, `GET /autores/{id}`, `PATCH /autores/{id}` | Crear, consultar y modificar datos enviados |
+| Autores | `GET /autores/{id}/libros` | Listar libros con rol y orden de ese autor |
+| Libros | `POST /libros/`, `GET /libros/`, `GET /libros/{id}`, `PATCH /libros/{id}` | Crear, buscar, consultar detalle y modificar |
+
+Para crear un género, enviar por ejemplo `POST /generos/` con `{"nombre":"Novela"}`. Todas las altas responden **201** al guardar correctamente; el `id` lo asigna la base, por lo que no debe enviarse. Los contratos de entrada rechazan campos desconocidos con **422**, tanto en el objeto principal como en las autorías anidadas.
+
+### Ejemplo de libro y lecturas
+
+Crear primero una editorial y al menos un autor; usar sus IDs reales en el ejemplo. Opcionalmente crear un género y proporcionar su ID; omitir `genero_id` deja el libro sin género. Los valores siguientes son ilustrativos:
+
+```http
+POST /libros/
+Content-Type: application/json
+
+{
+  "isbn": "9780000000001",
+  "titulo": "Un libro de ejemplo",
+  "precio": "25000.00",
+  "stock": 5,
+  "editorial_id": 1,
+  "genero_id": 1,
+  "autores": [{"autor_id": 1, "rol": "autor", "orden": 1}]
+}
+```
+
+Los roles admitidos son `autor`, `coautor`, `traductor` e `ilustrador`, y `orden` debe ser al menos 1. Precio positivo y stock no negativo son obligatorios. El valor del precio puede enviarse como cadena decimal para expresar los centavos con claridad; por ejemplo, `"10.999"` se rechaza con **422**. La respuesta de creación incluye el libro con editorial, género opcional y autorías; `GET /libros/{id}` devuelve ese detalle. `GET /libros/` lista libros con editorial y género.
+
+Los listados aceptan `limit` entre 1 y 100, por defecto 20, y `offset` desde 0, por defecto 0. Por ejemplo, `GET /libros/?limit=10&offset=10` solicita la segunda página de hasta diez resultados. También se pueden combinar `GET /libros/?titulo=ejemplo&genero_id=1`: el título busca una parte literal sin distinguir mayúsculas y filtra además por género. Los caracteres `%` y `_` se buscan literalmente. Una página o lista relacionada sin resultados es `[]` con **200** si el recurso padre existe.
+
+### Actualización parcial y errores
+
+En un `PATCH` se envían solamente los campos a cambiar. Por ejemplo, `PATCH /editoriales/1` con `{"pais":"Uruguay"}` conserva el nombre omitido. En el PATCH de libro, `{"titulo":"Otro título"}` conserva precio y demás campos; `{"genero_id":null}` quita el género, mientras que omitir `genero_id` lo conserva. Los campos obligatorios no aceptan `null`, y `autores` no se admite en PATCH: las autorías quedan como fueron creadas.
+
+En general, **404** indica que no se encontró el recurso consultado; **422**, que la entrada o parámetros no cumplen el contrato; y **409**, que una escritura entró en conflicto con la integridad de la base, por ejemplo un ISBN repetido o un ID de autor inexistente al crear un libro. El servicio hace `rollback` ante el conflicto: deshace toda la transacción pendiente, de modo que no quedan un libro y solo algunas de sus autorías. La respuesta de error no incluye SQL ni detalles internos.
+
