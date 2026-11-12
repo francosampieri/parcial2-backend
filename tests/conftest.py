@@ -42,3 +42,13 @@ async def client(application):
     async with AsyncClient(transport=ASGITransport(app=application), base_url="http://test") as instance:
         yield instance
 
+@pytest_asyncio.fixture
+async def domain_session(application):
+    """Cada prueba usa una transaccion propia que se revierte al salir."""
+    from sqlalchemy.ext.asyncio import AsyncSession
+    async with application.state.engine.connect() as connection:
+        transaction = await connection.begin()
+        async with AsyncSession(bind=connection, expire_on_commit=False) as session:
+            yield session
+        if transaction.is_active:
+            await transaction.rollback()
