@@ -46,9 +46,9 @@ La aplicación SHALL comprobar una conexión real con PostgreSQL durante su arra
 - **WHEN** se importa el punto de entrada sin dirección ni servidor configurados
 - **THEN** la importación no abre conexiones y la validación pendiente ocurre al iniciar la aplicación
 
-### Requirement: Creación aditiva de tablas registradas
+### Requirement: Creación aditiva de tablas del dominio
 
-El arranque SHALL registrar los modelos disponibles antes de crear las tablas faltantes. La creación SHALL conservar tablas y datos existentes y SHALL NOT alterar estructuras ya creadas. En C-01 el registro puede estar vacío; las nueve tablas del dominio pertenecen a C-02.
+El arranque SHALL registrar las nueve tablas del dominio antes de crear las tablas faltantes. La creación SHALL conservar tablas y datos existentes y SHALL NOT alterar estructuras ya creadas. El registro SHALL incluir editorial, genero, autor, libro, libro_autor, cliente, perfil_cliente, venta y renglon_venta, sin inventar tablas de salud.
 
 #### Scenario: Tabla registrada ausente
 - **WHEN** el arranque dispone de un modelo registrado y su tabla aún no existe en la base aislada
@@ -58,9 +58,13 @@ El arranque SHALL registrar los modelos disponibles antes de crear las tablas fa
 - **WHEN** se repite el arranque sobre una tabla registrada que contiene datos
 - **THEN** conserva los registros y la estructura existente sin borrados ni recreación
 
-#### Scenario: Registro de dominio todavía vacío
-- **WHEN** arranca la fundación sin las tablas de C-02
-- **THEN** verifica la conexión y completa la inicialización sin inventar entidades de negocio o de salud
+#### Scenario: Registro de dominio completo
+- **WHEN** arranca la aplicación sobre una base aislada vacía
+- **THEN** las nueve tablas de negocio están creadas antes de atender peticiones, con todas sus referencias resueltas y sin tabla de salud
+
+#### Scenario: Tablas ajenas existentes
+- **WHEN** arranca la aplicación sobre una base aislada que también contiene una tabla ajena con datos
+- **THEN** crea las tablas de dominio faltantes y conserva la tabla ajena, sus filas y su estructura
 
 ### Requirement: Sesiones aisladas por petición
 
