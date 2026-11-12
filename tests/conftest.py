@@ -74,3 +74,34 @@ def catalog_seed(application):
                 for id_ in ids:
                     await conn.execute(text("DELETE FROM editorial WHERE id = :id"), {"id": id_})
     return group
+
+
+@pytest.fixture
+def client_seed(application):
+    """Sembrar clientes propios y retirar sólo esas filas y sus perfiles."""
+    from contextlib import asynccontextmanager
+    from sqlalchemy import text
+
+    @asynccontextmanager
+    async def group():
+        ids: list[int] = []
+
+        async def create(name: str, email: str) -> int:
+            async with application.state.engine.begin() as conn:
+                result = await conn.execute(
+                    text("INSERT INTO cliente (nombre, email) VALUES (:name, :email) RETURNING id"),
+                    {"name": name, "email": email},
+                )
+                id_ = result.scalar_one()
+                ids.append(id_)
+                return id_
+
+        try:
+            yield create
+        finally:
+            async with application.state.engine.begin() as conn:
+                for id_ in ids:
+                    await conn.execute(text("DELETE FROM perfil_cliente WHERE cliente_id = :id"), {"id": id_})
+                    await conn.execute(text("DELETE FROM cliente WHERE id = :id"), {"id": id_})
+
+    return group

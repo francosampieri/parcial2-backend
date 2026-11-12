@@ -1,7 +1,7 @@
 # Librería — totones (2PRO1)
 
 API académica de Franco Sampieri, Mauro Di Pietro, Tomas Martinez y Renzo Victoria.
-C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo.
+C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo. C-04 incorpora las rutas de clientes y su perfil opcional.
 
 ## Preparación local
 
@@ -98,7 +98,7 @@ petición → router → Depends(get_session) → service → AsyncSession → P
 
 Antes de atender, se importan los modelos registrados y se ejecuta `create_all` con el motor async. Es una operación **aditiva**: crea tablas faltantes, no migra columnas de tablas existentes ni borra datos. Salud no necesita una tabla propia. Si una tabla existente es incompatible con el modelo, `create_all` no la actualiza: hay que analizar una migración antes de intervenir esa base. El arranque no ejecuta seed ni reset y no se implementan migraciones en este change.
 
-La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Salud y catálogo exponen operaciones; clientes y ventas se desarrollan en changes posteriores.
+La estructura reserva los módulos `health`, `editoriales`, `generos`, `autores`, `libros`, `clientes` y `ventas`, con responsabilidades separadas en `models`, `schemas`, `service` y `router`. Salud, catálogo y clientes exponen operaciones; ventas se incorpora en C-05.
 
 ## Modelo de datos
 
@@ -180,7 +180,7 @@ Strict TDD organiza el desarrollo: prueba conductual RED, implementación mínim
 
 ## Continuación y fuentes
 
-Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Clientes continúa en C-04; ventas en C-05; validación integral/seed en C-06; contenedor en C-07 y publicación revisada en C-08. La entrega final es `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1.
+Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Clientes corresponde a C-04; ventas a C-05; validación integral/seed a C-06; contenedor a C-07 y publicación revisada a C-08. La entrega final es `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1.
 
 La evidencia real de C-01 y sus ciclos TDD está en [TDD-C01](docs/evidencia/TDD-C01.md): 51 pruebas pasaron en PostgreSQL17 privado, con servidor Uvicorn real y recuperación tras caída de la base. La disponibilidad de wheels Windows/musl fue comprobada; el build Alpine se verifica en C-07.
 ## Operaciones del catálogo
@@ -240,4 +240,14 @@ Los listados aceptan `limit` entre 1 y 100, por defecto 20, y `offset` desde 0, 
 En un `PATCH` se envían solamente los campos a cambiar. Por ejemplo, `PATCH /editoriales/1` con `{"pais":"Uruguay"}` conserva el nombre omitido. En el PATCH de libro, `{"titulo":"Otro título"}` conserva precio y demás campos; `{"genero_id":null}` quita el género, mientras que omitir `genero_id` lo conserva. Los campos obligatorios no aceptan `null`, y `autores` no se admite en PATCH: las autorías quedan como fueron creadas.
 
 En general, **404** indica que no se encontró el recurso consultado; **422**, que la entrada o parámetros no cumplen el contrato; y **409**, que una escritura entró en conflicto con la integridad de la base, por ejemplo un ISBN repetido o un ID de autor inexistente al crear un libro. El servicio hace `rollback` ante el conflicto: deshace toda la transacción pendiente, de modo que no quedan un libro y solo algunas de sus autorías. La respuesta de error no incluye SQL ni detalles internos.
+
+## Clientes y perfiles (C-04)
+
+Un **cliente** guarda nombre y email para las operaciones de la librería; no representa una cuenta con inicio de sesión. Esta API no autentica usuarios. El email es único en PostgreSQL. `POST /clientes/` recibe, por ejemplo, `{"nombre":"Ana Pérez","email":"ana@example.com"}` y responde **201** con el `id` generado. El cuerpo no acepta `id` ni otros campos desconocidos (**422**). Si el email ya pertenece a otro cliente, la escritura responde **409** y el servicio revierte la transacción.
+
+`GET /clientes/{id}` devuelve el cliente con `perfil` como objeto cuando existe y `null` cuando todavía no se creó. Un cliente inexistente responde **404**; un ID que no sea entero, **422**. La relación uno a uno se precarga con `joinedload`, de modo que serializar el perfil no dispara una consulta posterior.
+
+`PATCH /clientes/{id}` modifica solamente los campos enviados. Por ejemplo, `{"nombre":"Ana María Pérez"}` cambia el nombre y conserva el email y el perfil. El service usa `exclude_unset=True` para distinguir **campo omitido** de **campo enviado**. `{"email":null}` y `{"nombre":null}` se rechazan con **422**; un campo desconocido también. Si el email nuevo ya existe, responde **409** con rollback y conserva los datos anteriores. Un cliente inexistente responde **404**.
+
+Cada cliente puede tener **como máximo un perfil**. `perfil_cliente.cliente_id` es una FK a `cliente.id` y tiene una restricción `UNIQUE`; un cliente sin perfil no tiene fila en esa tabla. La ruta `POST /clientes/{id}/perfil` forma parte de C-04: el ID del cliente se toma de la URL y el cuerpo contiene `telefono` y `direccion`, por ejemplo `{"telefono":"1123456789","direccion":"Calle 123"}`. Responde **201** al crear; **404** si el cliente no existe; **409** si ya tiene perfil; y **422** para campos desconocidos o incompletos. Editar o borrar un perfil y consultar las ventas del cliente no pertenecen a estas cuatro rutas; la consulta de ventas se incorpora en C-05.
 

@@ -171,7 +171,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
   - [10 — Preguntas abiertas](knowledge-base/10_preguntas_abiertas.md) §PA-04/PA-05/PA-10/PA-11
 
 ### [C-04] `clientes-y-perfiles`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado, verificado y [archivado](openspec/changes/archive/2026-11-12-clientes-y-perfiles/) (12/11/2026); 14/14 tareas y specs sincronizadas. Evidencia: [TDD-C04](docs/evidencia/TDD-C04.md); 227 pruebas pasaron.
 - **Scope**:
   - Crear schemas, services y routers de clientes/perfiles con contratos separados; implementar POST /clientes/, GET/PATCH /clientes/{id} y POST /clientes/{id}/perfil. La consulta de ventas del cliente pertenece a C-05 para no crear una dependencia circular.
   - Proteger email y perfil único con la DB, sin preconsulta de unicidad. Cliente inexistente en detalle/PATCH/alta de perfil devuelve 404; email repetido o segundo perfil, 409 con mensaje propio y rollback.

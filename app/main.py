@@ -18,6 +18,7 @@ from app.modules.editoriales.router import router as editoriales_router
 from app.modules.generos.router import router as generos_router
 from app.modules.autores.router import router as autores_router
 from app.modules.libros.router import router as libros_router
+from app.modules.clientes.router import router as clientes_router
 
 
 @asynccontextmanager
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
     application.include_router(generos_router)
     application.include_router(autores_router)
     application.include_router(libros_router)
+    application.include_router(clientes_router)
     return application
 
 
