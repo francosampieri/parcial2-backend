@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 y C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 `imagen-docker` quedó implementado y archivado con 6/6 tareas y spec sincronizada; la evidencia local está en `docs/evidencia/C07-local.md`. C-08 continúa planificado. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -233,7 +233,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
 ## FASE 4 — Contenedor, publicación y entrega
 
 ### [C-07] `imagen-docker`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado, verificado y [archivado](openspec/changes/archive/2026-11-12-imagen-docker/) (12/11/2026); 6/6 tareas y spec `container-image` sincronizada. Evidencia local: [C07-local](docs/evidencia/C07-local.md).
 - **Scope**:
   - Crear Dockerfile desde python:3.12-alpine; copiar/instalar requirements.txt con --no-cache-dir antes del código, verificar dependencias en Alpine sin agregar compiladores innecesarios y ejecutar con usuario no root.
   - Crear .dockerignore que excluya .env, .venv, .git y __pycache__; no incorporar secretos en capas ni configuración real de DB en la imagen.

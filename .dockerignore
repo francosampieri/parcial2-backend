@@ -1,0 +1,18 @@
+# La imagen sólo necesita las dependencias y el paquete de la API.
+*
+!requirements.txt
+!app/
+!app/**
+
+# Exclusiones defensivas aun si aparecen dentro de app/.
+**/.env
+**/.env.*
+**/.venv/
+**/.git/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/*.pem
+**/*.key

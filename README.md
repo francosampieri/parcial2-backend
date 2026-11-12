@@ -3,6 +3,8 @@
 API académica de Franco Sampieri, Mauro Di Pietro, Tomas Martinez y Renzo Victoria.
 C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo. C-04 incorpora las rutas de clientes y su perfil opcional.
 
+La [guía de imagen Docker y publicación](DEPLOY.md) explica cómo construir el contenedor de la API, conectarlo a PostgreSQL externo y verificarlo. La publicación real en la VPS se completará en C-08.
+
 ## Preparación local
 
 Requisitos: Python 3.12 o superior con `venv`/`pip` y una base PostgreSQL 16 o superior accesible. Se recomienda Python 3.12 para mantener la misma rama que la futura imagen del parcial. No es necesario Docker para desarrollar C-01.
