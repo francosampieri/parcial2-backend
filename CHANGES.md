@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 14/18 tareas marcadas (cuatro desviaciones TDD documentadas), aunque la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -152,7 +152,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
 > C-03 y C-04 pueden implementarse en paralelo una vez definido C-02. C-05 integra ambas capacidades. Las pruebas relevantes se escriben dentro de cada change, no se postergan a C-06.
 
 ### [C-03] `catalogo-y-autorias`
-- **Estado**: `[~]` archivado con advertencia — 14/18 tareas marcadas; [archivo OpenSpec](openspec/changes/archive/2026-11-12-catalogo-y-autorias/) y [evidencia TDD](docs/evidencia/TDD-C03.md). Cuatro tareas permanecen abiertas por RED específico omitido; 205 pruebas funcionales pasaron.
+- **Estado**: `[x]` archivado — 18/18 tareas funcionales marcadas; [archivo OpenSpec](openspec/changes/archive/2026-11-12-catalogo-y-autorias/) y [evidencia TDD](docs/evidencia/TDD-C03.md). Cuatro desviaciones por RED específico omitido siguen documentadas; 205 pruebas funcionales pasaron.
 - **Scope**:
   - Crear schemas Create/Update/Read y services/routers de editoriales, géneros, autores y libros, separados de los modelos de tabla; registrar sus routers.
   - Implementar las 16 operaciones: POST/GET /editoriales/, GET/PATCH /editoriales/{id}, GET /editoriales/{id}/libros; POST/GET /generos/, GET /generos/{id}/libros; POST /autores/, GET/PATCH /autores/{id}, GET /autores/{id}/libros; POST/GET /libros/, GET/PATCH /libros/{id}.

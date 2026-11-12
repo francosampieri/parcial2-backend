@@ -7,14 +7,14 @@
 
 ## 2. Editoriales y convenciones compartidas
 
-- [ ] 2.1 Bajo RED ejecutado → GREEN → triangulación, crear DTO de editorial y POST `/editoriales/`, verificando 201, extra/id rechazado 422, duplicado 409 propio/rollback y nombres distintos; registrar evidencia por ciclo y explicar DTO/201/409 en README.
-- [ ] 2.2 Bajo TDD agregar GET lista/detalle y PATCH editorial: verificar paginación, orden, ID inexistente 404, ID no entero 422 sin handler, omisión vs `null`, conflicto 409 y preservación de campos; documentar PATCH en README.
+- [x] 2.1 Bajo RED ejecutado → GREEN → triangulación, crear DTO de editorial y POST `/editoriales/`, verificando 201, extra/id rechazado 422, duplicado 409 propio/rollback y nombres distintos; registrar evidencia por ciclo y explicar DTO/201/409 en README.
+- [x] 2.2 Bajo TDD agregar GET lista/detalle y PATCH editorial: verificar paginación, orden, ID inexistente 404, ID no entero 422 sin handler, omisión vs `null`, conflicto 409 y preservación de campos; documentar PATCH en README.
 - [x] 2.3 Bajo TDD implementar GET `/editoriales/{id}/libros`: padre inexistente 404, existente sin libros 200 vacío y varios libros paginados con precarga; comprobar límites y ausencia de carga perezosa.
 
 ## 3. Géneros y autores
 
-- [ ] 3.1 Bajo TDD crear DTO/servicio/router de géneros: POST/GET lista y libros por género; verificar 201, duplicado 409, extra 422, paginación, género inexistente 404 y existente vacío 200. Documentar rutas y ejemplos sin semillas inventadas.
-- [ ] 3.2 Bajo TDD crear DTO/servicio/router de autores: POST, GET/PATCH por ID; verificar 201, actualización parcial, `null` y extra 422, IDs no entero/inexistente, nombres repetidos permitidos y datos sin restricciones adicionales; documentar rutas.
+- [x] 3.1 Bajo TDD crear DTO/servicio/router de géneros: POST/GET lista y libros por género; verificar 201, duplicado 409, extra 422, paginación, género inexistente 404 y existente vacío 200. Documentar rutas y ejemplos sin semillas inventadas.
+- [x] 3.2 Bajo TDD crear DTO/servicio/router de autores: POST, GET/PATCH por ID; verificar 201, actualización parcial, `null` y extra 422, IDs no entero/inexistente, nombres repetidos permitidos y datos sin restricciones adicionales; documentar rutas.
 - [x] 3.3 Bajo TDD GET `/autores/{id}/libros`: verificar 404, lista vacía, varios libros paginados y rol/orden propios del autor, incluidos autores con igual orden; precargar relaciones y probar que no hay SQL por fila.
 
 ## 4. Alta de libro con autorías
