@@ -1,0 +1,161 @@
+{
+  "version": 4,
+  "step": "done",
+  "owner": "active-orchestrator",
+  "discovery": {
+    "skipped": true
+  },
+  "kb": {
+    "created_by": "kb-creator",
+    "source": "ingest",
+    "discovery": {
+      "problem": "Gestionar catálogo, clientes y ventas de una librería mediante una API asincrónica y demostrar su despliegue académico en VPS",
+      "system_type": "api",
+      "domain": "librería: catálogo y ventas",
+      "scale": "team (inferred, low confidence)",
+      "stack": [
+        "Python >=3.12",
+        "FastAPI >=0.111",
+        "SQLModel >=0.0.24",
+        "SQLAlchemy >=2.0 async",
+        "asyncpg >=0.30",
+        "PostgreSQL >=16",
+        "python-dotenv >=1.0",
+        "uvicorn via fastapi[standard]",
+        "Docker >=20.10",
+        "python:3.12-alpine"
+      ],
+      "needs_infra": true
+    },
+    "files": [
+      "knowledge-base/01_vision_y_objetivos.md",
+      "knowledge-base/02_descripcion_general.md",
+      "knowledge-base/03_actores_y_roles.md",
+      "knowledge-base/04_modelo_de_datos.md",
+      "knowledge-base/05_reglas_de_negocio.md",
+      "knowledge-base/06_funcionalidades.md",
+      "knowledge-base/07_flujos_principales.md",
+      "knowledge-base/08_arquitectura_propuesta.md",
+      "knowledge-base/09_decisiones_y_supuestos.md",
+      "knowledge-base/10_preguntas_abiertas.md",
+      "knowledge-base/README.md"
+    ]
+  },
+  "roadmap": {
+    "created_by": "roadmap-generator",
+    "source": "CHANGES.md",
+    "changes_file": "CHANGES.md",
+    "changes": [
+      "C-01",
+      "C-02",
+      "C-03",
+      "C-04",
+      "C-05",
+      "C-06",
+      "C-07",
+      "C-08"
+    ]
+  },
+  "skills": {
+    "created_by": "find-skill",
+    "recommended": [
+      {
+        "name": "python-testing-patterns",
+        "repository": "wshobson/agents",
+        "source_url": "https://github.com/wshobson/agents",
+        "skill_url": "https://www.skills.sh/wshobson/agents/python-testing-patterns",
+        "skill_file_url": "https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-testing-patterns/SKILL.md",
+        "reviewed_references": [
+          "https://github.com/wshobson/agents/blob/main/plugins/python-development/skills/python-testing-patterns/references/advanced-patterns.md"
+        ],
+        "installs": {
+          "display": "40.1K",
+          "approximate": true,
+          "source_url": "https://www.skills.sh/wshobson/agents/python-testing-patterns",
+          "observed_on": "2026-11-11"
+        },
+        "stars": {
+          "display": "42.4K",
+          "approximate": true,
+          "source_url": "https://github.com/wshobson/agents",
+          "observed_on": "2026-11-11"
+        },
+        "reason": "Patrones pytest de fixtures, parametrizacion, excepciones y async para C-01 a C-06; complementa Strict TDD.",
+        "compatibility": "Aplicar patrones pertinentes; no adoptar fallback SQLite, resets sobre datos reales, auth, dependencias auxiliares ni umbrales de cobertura por sus ejemplos. Conservar PostgreSQL aislado, DATABASE_URL requerida y archivos .http.",
+        "install_command": "npx skills add https://github.com/wshobson/agents --skill python-testing-patterns --agent codex --copy --yes"
+      },
+      {
+        "name": "supabase-postgres-best-practices",
+        "repository": "supabase/agent-skills",
+        "source_url": "https://github.com/supabase/agent-skills",
+        "skill_url": "https://www.skills.sh/supabase/agent-skills/supabase-postgres-best-practices",
+        "skill_file_url": "https://github.com/supabase/agent-skills/blob/main/skills/supabase-postgres-best-practices/SKILL.md",
+        "reviewed_references": [
+          "https://github.com/supabase/agent-skills/blob/main/skills/supabase-postgres-best-practices/references/schema-foreign-key-indexes.md",
+          "https://github.com/supabase/agent-skills/blob/main/skills/supabase-postgres-best-practices/references/data-n-plus-one.md"
+        ],
+        "installs": {
+          "display": "481.6K",
+          "approximate": true,
+          "source_url": "https://www.skills.sh/supabase/agent-skills/supabase-postgres-best-practices",
+          "observed_on": "2026-11-11"
+        },
+        "stars": {
+          "display": "3K",
+          "approximate": true,
+          "source_url": "https://github.com/supabase/agent-skills",
+          "observed_on": "2026-11-11"
+        },
+        "reason": "Guia oficial de Supabase aplicable a PostgreSQL en cualquier entorno: esquema, indices FK y N+1 para C-02 a C-06.",
+        "compatibility": "Supabase hospedado, auth, RLS, migraciones y extensiones son temas contextuales, no requisitos universales. Mantener SQLModel/SQLAlchemy async, create_all y precarga exigida; sin cambios de VPS ni gobernanza derivados de prioridades internas de la guia.",
+        "install_command": "npx skills add https://github.com/supabase/agent-skills --skill supabase-postgres-best-practices --agent codex --copy --yes"
+      }
+    ],
+    "installed": [
+      {
+        "name": "python-testing-patterns",
+        "source": "wshobson/agents",
+        "scope": "project",
+        "path": ".agents/skills/python-testing-patterns",
+        "install_mode": "copy",
+        "computed_hash": "8113c05a831d4872c9294b0df26a335c09af423ee2e23d8b9b6817b300d96796"
+      },
+      {
+        "name": "supabase-postgres-best-practices",
+        "source": "supabase/agent-skills",
+        "scope": "project",
+        "path": ".agents/skills/supabase-postgres-best-practices",
+        "install_mode": "copy",
+        "computed_hash": "3eb972c2d7c818e544e35cc33ea8d7147d4d78ae08142ef40037b0fbac7a2505"
+      }
+    ]
+  },
+  "registry": {
+    "created_by": "skill-registry",
+    "file": ".atl/skill-registry.md",
+    "count": 39
+  },
+  "agents": {
+    "created_by": "agent-instruction",
+    "files": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ],
+    "reglas_applied": [
+      "python-snake-case-type-hints",
+      "input-dto-extra-forbid",
+      "atomic-book-and-sale-writes",
+      "async-modular-api",
+      "database-integrity-own-http-errors",
+      "lifespan-required-database-url",
+      "decimal-historic-prices",
+      "eager-loading-pagination-bound-queries",
+      "strict-tdd-isolated-postgresql-http-evidence",
+      "alpine-nonroot-docker-run-external-db",
+      "secrets-and-reviewed-vps-changes",
+      "continuous-didactic-explanations-normal-sized-changes",
+      "opsx-cli-delegation-engram",
+      "no-commit-push-without-request"
+    ]
+  }
+}
