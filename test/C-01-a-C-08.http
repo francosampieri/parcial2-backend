@@ -1,0 +1,195 @@
+@base = http://127.0.0.1:8000
+# Reemplazar los IDs por la salida REAL de `python -m app.demo_seed`.
+@editorial = 0
+@genero = 0
+@autor1 = 0
+@autor2 = 0
+@libro25000 = 0
+@libro27000 = 0
+@libroDosAutores = 0
+@cliente = 0
+
+### [OP 01] Salud live — 200
+GET {{base}}/health/live
+
+### [OP 02] Salud ready — 200 si PostgreSQL está disponible
+GET {{base}}/health/ready
+
+### [OP 03] Crear editorial — 201; guardar ID devuelto
+# @name crearEditorial
+POST {{base}}/editoriales/
+Content-Type: application/json
+
+{"nombre":"Editorial recorrido","pais":"AR"}
+
+> {% client.global.set("editorialNueva", response.body.id); %}
+
+### [OP 04] Listar editoriales — 200
+GET {{base}}/editoriales/?limit=20&offset=0
+
+### [OP 05] Detalle editorial — 200
+GET {{base}}/editoriales/{{editorialNueva}}
+
+### [OP 06] Actualizar editorial — 200
+PATCH {{base}}/editoriales/{{editorialNueva}}
+Content-Type: application/json
+
+{"pais":"UY"}
+
+### [OP 07] Libros de editorial — 200, [] para la recién creada
+GET {{base}}/editoriales/{{editorialNueva}}/libros
+
+### [OP 08] Crear género — 201
+POST {{base}}/generos/
+Content-Type: application/json
+
+{"nombre":"Género recorrido"}
+
+> {% client.global.set("generoNuevo", response.body.id); %}
+
+### [OP 09] Listar géneros — 200
+GET {{base}}/generos/
+
+### [OP 10] Libros de género del seed — 200
+GET {{base}}/generos/{{genero}}/libros
+
+### [OP 11] Crear autor — 201
+POST {{base}}/autores/
+Content-Type: application/json
+
+{"nombre":"Autora Recorrido","nacionalidad":"AR"}
+
+> {% client.global.set("autorNuevo", response.body.id); %}
+
+### [OP 12] Detalle autor — 200
+GET {{base}}/autores/{{autorNuevo}}
+
+### [OP 13] Actualizar autor — 200
+PATCH {{base}}/autores/{{autorNuevo}}
+Content-Type: application/json
+
+{"nacionalidad":"UY"}
+
+### [OP 14] Libros de autor del seed — 200
+GET {{base}}/autores/{{autor1}}/libros
+
+### [OP 15] Crear libro con autoría — 201
+POST {{base}}/libros/
+Content-Type: application/json
+
+{"isbn":"9780000000099","titulo":"Libro recorrido","precio":"100.00","stock":1,"editorial_id":{{editorialNueva}},"genero_id":{{generoNuevo}},"autores":[{"autor_id":{{autorNuevo}},"rol":"autor","orden":1}]}
+
+> {% client.global.set("libroNuevo", response.body.id); %}
+
+### [OP 16] Listar y filtrar libros — 200
+GET {{base}}/libros/?titulo=Libro%20recorrido&limit=20&offset=0
+
+### [OP 17] Detalle de libro con autores — 200
+GET {{base}}/libros/{{libroNuevo}}
+
+### [OP 18] Actualizar libro — 200
+PATCH {{base}}/libros/{{libroNuevo}}
+Content-Type: application/json
+
+{"stock":2}
+
+### [OP 19] Crear cliente — 201
+POST {{base}}/clientes/
+Content-Type: application/json
+
+{"nombre":"Cliente recorrido","email":"recorrido@totones.example"}
+
+> {% client.global.set("clienteNuevo", response.body.id); %}
+
+### [OP 20] Detalle de cliente sin perfil — 200, perfil null
+GET {{base}}/clientes/{{clienteNuevo}}
+
+### [OP 21] Actualizar cliente — 200
+PATCH {{base}}/clientes/{{clienteNuevo}}
+Content-Type: application/json
+
+{"nombre":"Cliente recorrido actualizado"}
+
+### [OP 22] Crear perfil — 201
+POST {{base}}/clientes/{{clienteNuevo}}/perfil
+Content-Type: application/json
+
+{"telefono":"1123456789","direccion":"Calle de prueba 123"}
+
+### [OP 23] Ventas del cliente — 200, inicialmente []
+GET {{base}}/clientes/{{clienteNuevo}}/ventas
+
+### [OP 24] Venta de dos renglones del seed — 201, total 77000.00
+POST {{base}}/ventas/
+Content-Type: application/json
+
+{"cliente_id":{{cliente}},"renglones":[{"libro_id":{{libro25000}},"cantidad":2},{"libro_id":{{libro27000}},"cantidad":1}]}
+
+> {% client.global.set("ventaNueva", response.body.id); %}
+
+### [OP 25] Listar ventas — 200
+GET {{base}}/ventas/?limit=20&offset=0
+
+### [OP 26] Detalle de venta — 200, total 77000.00
+GET {{base}}/ventas/{{ventaNueva}}
+
+### C-01: ID no entero — 422
+GET {{base}}/libros/no-es-entero
+
+### C-02: ISBN duplicado — 409
+POST {{base}}/libros/
+Content-Type: application/json
+
+{"isbn":"9780000000001","titulo":"Duplicado","precio":"1.00","stock":1,"editorial_id":{{editorial}},"autores":[{"autor_id":{{autor1}},"rol":"autor","orden":1}]}
+
+### C-02: email duplicado — 409
+POST {{base}}/clientes/
+Content-Type: application/json
+
+{"nombre":"Duplicado","email":"cliente-demo@totones.example"}
+
+### C-03: segundo perfil — 409
+POST {{base}}/clientes/{{clienteNuevo}}/perfil
+Content-Type: application/json
+
+{"telefono":"1123456789","direccion":"Otra dirección"}
+
+### C-04: editorial inexistente al crear libro — 409
+POST {{base}}/libros/
+Content-Type: application/json
+
+{"isbn":"9780000000098","titulo":"Sin editorial","precio":"1.00","stock":1,"editorial_id":2147483647,"autores":[{"autor_id":{{autor1}},"rol":"autor","orden":1}]}
+
+### C-04: autor inexistente al crear libro — 409
+POST {{base}}/libros/
+Content-Type: application/json
+
+{"isbn":"9780000000097","titulo":"Sin autor","precio":"1.00","stock":1,"editorial_id":{{editorial}},"autores":[{"autor_id":2147483647,"rol":"autor","orden":1}]}
+
+### C-05: libro inexistente en venta — 409
+POST {{base}}/ventas/
+Content-Type: application/json
+
+{"cliente_id":{{cliente}},"renglones":[{"libro_id":2147483647,"cantidad":1}]}
+
+### C-05: cliente inexistente en venta — 409
+POST {{base}}/ventas/
+Content-Type: application/json
+
+{"cliente_id":2147483647,"renglones":[{"libro_id":{{libro25000}},"cantidad":1}]}
+
+### C-06: la venta creada arriba tiene dos renglones y total 77000.00 — 200
+GET {{base}}/ventas/{{ventaNueva}}
+
+### C-07: consultar detalle de libros con 1 y 2 autores y ventas con 1 y 2 renglones — 200
+GET {{base}}/libros/{{libro25000}}
+
+### C-07: libro del seed con dos autores — 200
+# Usar el tercer ID de libros informado por el seed.
+GET {{base}}/libros/{{libroDosAutores}}
+
+### C-07: venta con dos renglones — 200
+GET {{base}}/ventas/{{ventaNueva}}
+
+### C-08: cadena de inyección buscada literalmente — 200, []
+GET {{base}}/libros/?titulo=%27%20OR%20%271%27%3D%271

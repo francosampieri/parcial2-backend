@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 a C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 y C-08 continúan planificados. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -211,7 +211,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
 ## FASE 3 — API verificada y demostración reproducible
 
 ### [C-06] `validacion-integral-y-datos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` implementado, verificado y archivado (9/9 tareas; spec sincronizada)
 - **Scope**:
   - Crear comando de datos iniciales explícito que deje datos conocidos para las demostraciones y permita repetición segura. Resolver IDs/datos del ejemplo; separar cualquier reset en DB aislada, sin borrar datos del servidor ni de otro proyecto.
   - Entregar archivos test/*.http con los casos del PDF C-01 a C-08, comentarios de respuesta esperada y secuencia reproducible. Mantener las pruebas TDD ya implementadas; cubrir sólo huecos conductuales reales del recorrido integral.

@@ -65,6 +65,22 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 La configuración y la primera conexión se comprueban en **startup**, antes de servir peticiones. Si falta la dirección, es inválida o PostgreSQL no está disponible desde el inicio, el arranque falla. Importar `app.main` por sí solo no abre conexiones. El 503 de readiness corresponde a una caída **posterior a un arranque exitoso**.
 
+## Seed y demostración C-06
+
+Con la base propia de desarrollo preparada, instalar dependencias, configurar `.env` y arrancar la API una vez. Ese primer arranque crea las tablas faltantes; luego puede detenerse. Ejecutar manualmente:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.demo_seed
+```
+
+En Linux/macOS con el entorno activado: `python -m app.demo_seed`. El comando imprime un JSON con los IDs reales de `editorial`, `genero`, `autores`, `libros` (en orden: Rayuela, Libro de cuentos, Ensayos, Respiración artificial) y `cliente`. Busca por nombre de editorial/género, ISBN, email y, para autor, nombre+nacionalidad; agrega sólo filas faltantes y conserva las existentes. La operación usa una transacción: si una clave coincide con datos discrepantes o hay autores ambiguos, informa el conflicto y revierte sus nuevas inserciones. No modifica ni borra datos previos. Una edición de precio u otro atributo de un libro del seed también se considera discrepancia; para repetir una demostración exacta, usar otra base de prueba aislada. El seed no se ejecuta en startup.
+
+Copiar los IDs informados a las variables iniciales de [casos HTTP](test/C-01-a-C-08.http). Se pueden ejecutar con REST Client en VS Code, siguiendo [la guía del recorrido](test/README.md); los POST adicionales capturan automáticamente el ID de su respuesta. Los bloques `[OP 01]` a `[OP 26]` cubren las 26 operaciones y los bloques C-01 a C-08 comprueban los casos de error, importe e inyección. Usar una base aislada para ejecutar el recorrido completo desde cero; repetir los POST con las mismas claves genera conflictos esperados. La evidencia medida de venta, persistencia y conteo SQL se guarda en [C-06](docs/evidencia/C06-validacion.md).
+
+Para comprobar todos los ejemplos sin configurar una base propia ni instalar la extensión, definir `PG_BIN` como en **Pruebas** y ejecutar `.\.venv\Scripts\python.exe -m test.verify_examples` en PowerShell (o `python -m test.verify_examples` con el entorno activado). Este comando prepara y elimina su propio PostgreSQL privado y comprueba las respuestas de las 39 peticiones del archivo.
+
+Para comprobar código y contratos, definir `PG_BIN` como se explica en **Pruebas** y ejecutar `python -m pytest -q` (o `.\.venv\Scripts\python.exe -m pytest -q` en PowerShell). Esa suite inicia su propio PostgreSQL privado y no usa la base de `.env`.
+
 ## Consultas de salud
 
 | Operación | Respuesta | Qué comprueba |
