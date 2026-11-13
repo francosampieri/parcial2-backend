@@ -27,6 +27,7 @@ async def avisar_comprobante(venta_id: int, total: Decimal) -> None:
     """Simular el comprobante fuera de la respuesta y sin usar la sesión."""
     await asyncio.sleep(0.5)
     logger.info("Comprobante emitido para venta %s por %s", venta_id, total)
+    logging.getLogger("uvicorn.error").info("Comprobante emitido para venta %s por %s", venta_id, total)
 
 
 async def _cargar_libros(session: AsyncSession, ids: list[int]) -> dict[int, Libro]:
