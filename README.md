@@ -3,7 +3,7 @@
 API académica de Franco Sampieri, Mauro Di Pietro, Tomas Martinez y Renzo Victoria.
 C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo. C-04 incorpora las rutas de clientes y su perfil opcional.
 
-La [guía de imagen Docker y publicación](DEPLOY.md) explica cómo construir el contenedor de la API, conectarlo a PostgreSQL externo y verificarlo. La publicación real en la VPS se completará en C-08.
+La API está publicada en https://parcial2-api.maurodip.me/ (salud: `/health/ready`; documentación: `/docs`). La ruta de salud respondió `{"estado":"listo"}` por HTTPS. La [guía de despliegue](DEPLOY.md) y la [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) describen la imagen, la base separada y las verificaciones realizadas.
 
 ## Preparación local
 

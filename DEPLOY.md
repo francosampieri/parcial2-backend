@@ -1,6 +1,14 @@
 # Imagen Docker y publicación de la API
 
-Esta guía prepara la imagen de C-07. Los valores reales de la VPS y las evidencias de publicación corresponden a C-08: primero hay que inspeccionar el servidor, su PostgreSQL y el proyecto que ya funciona allí. Los comandos siguientes son ejemplos parametrizados para una terminal Linux; reemplazar cada ruta y puerto por los del entorno elegido.
+## Despliegue real del parcial
+
+- **URL pública:** `https://parcial2-api.maurodip.me/` (`/health/ready` respondió `{"estado":"listo"}` por HTTPS). El grupo confirmó que la cátedra autorizó usar esta VPS; no se confirmó una autorización específica para EasyPanel.
+- **Fecha:** publicación comprobada el 12 de noviembre de 2026; actualización con el aviso D-07 y venta de verificación 3 a las `2026-11-13T02:17:58Z` (UTC). No se registró la hora exacta de la primera implementación.
+- **Construcción y ejecución reales:** EasyPanel construyó el `Dockerfile` de la rama `main` del repositorio GitHub `francosampieri/parcial2-backend` y ejecutó la imagen como servicio App `parcial2-api` dentro del proyecto `totones`. PostgreSQL es el servicio privado y persistente `parcial2-db` del mismo proyecto, con host interno `totones_parcial2-db:5432`. EasyPanel administra el contenedor y el reinicio; el usuario no ejecutó `docker build` ni `docker run` para el servicio publicado. Por eso no se presentan comandos de esos tipos como evidencia de la publicación real. Se ejecutó un `docker run --rm --network none` solamente para D-05.
+- **Configuración:** `DATABASE_URL` con `postgresql+asyncpg` se cargó de forma privada en Entorno de EasyPanel y `SQL_ECHO=false`; el valor secreto no aparece en este archivo, la imagen ni el repositorio. La API escucha en el puerto interno `8000`; el proxy de EasyPanel ofrece HTTPS. El seed se ejecutó con `python -m app.demo_seed` en la consola de la App.
+- **Actualización:** publicar el commit en GitHub, pulsar **Implementar** en `totones/parcial2-api`, comprobar `/health/ready` y, si EasyPanel restablece el modo de red que falla en esta VPS, ejecutar `docker service update --endpoint-mode dnsrr totones_parcial2-api`. La base permanece en su servicio propio, por lo que la venta 2 conservó el total `77000.00` tras recrear la API. El commit `0792fce` hizo visible el aviso D-07 en los logs y fue implementado así.
+
+La [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) detalla comandos, resultados observados y límites de verificación. Los comandos `docker build` y `docker run` siguientes son **ejemplos para una instalación directa**, no el método EasyPanel efectivamente usado. La consigna solicita explícitamente `docker run`; esta diferencia queda declarada para la corrección.
 
 ## Qué se ejecuta
 
@@ -96,7 +104,7 @@ Estas casillas requieren una ejecución real; los archivos por sí solos no prue
 | Contenedor con PostgreSQL aislado: `healthy`, ready 200, puerto y tablas | Verificado localmente; ver evidencia C-07 |
 | Sin URL, DB inaccesible al inicio y caída posterior: logs/estado | Verificado localmente; ver evidencia C-07 |
 | Seed por `docker exec`, recreación y filas conservadas | Verificado localmente; ver evidencia C-07 |
-| URL pública real de VPS | Pendiente de C-08 |
-| Fecha, comandos y capturas o salidas sanitizadas de VPS | Pendiente de C-08 |
+| URL pública real de VPS | `https://parcial2-api.maurodip.me/health/ready` respondió `{"estado":"listo"}` por HTTPS; ver [evidencia C-08](docs/evidencia/C08-vps-parcial.md) |
+| Fecha, comandos y capturas o salidas sanitizadas de VPS | Evidencia parcial de C-08 registrada; D-07 se verificó en logs con venta 3 tras el commit 0792fce; recuperación de calculadora sigue pendiente |
 
 No presentar resultados locales como evidencia de VPS. Antes de compartir logs o capturas, quitar URL de conexión, usuarios, contraseñas, direcciones privadas y otros secretos.
