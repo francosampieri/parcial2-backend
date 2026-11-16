@@ -13,7 +13,15 @@
 
 ## Publicación manual del frontend (evaluación global)
 
-El frontend se publica como un **segundo App** dentro del mismo proyecto `totones`, sin crear un cuarto proyecto ni tocar `parcial2-db`. La ejecución es manual en EasyPanel.
+El frontend se publicó como **`parcial2-frontend`** dentro del mismo proyecto `totones`, sin crear un cuarto proyecto ni tocar `parcial2-db`.
+
+- **URL pública:** `https://parcial2.maurodip.me` (verificada el 16/11/2026).
+- **Arranque observado:** logs de Nginx del 16/11/2026 a las 15:23:37 (hora del servidor).
+- **Dominio:** `parcial2.maurodip.me`, puerto interno 80 y HTTPS.
+- **Variable:** `API_UPSTREAM=totones_parcial2-api:8000`.
+- **Proxy:** `/api/` hacia el backend interno; sin CORS.
+
+La ejecución es manual en EasyPanel.
 
 ### Preparación del repositorio
 

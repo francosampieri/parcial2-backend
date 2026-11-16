@@ -4,11 +4,16 @@ Grupo **totones** — Programación III, 2PRO1.
 
 ## Datos de la publicación
 
-- **URL pública del frontend:** `https://parcial2.maurodip.me` (completar/ajustar con la URL real al publicar).
+- **URL pública del frontend:** `https://parcial2.maurodip.me` (verificada el 16/11/2026).
 - **API interna:** `http://totones_parcial2-api:8000`.
-- **Fecha y hora del despliegue:** completar al publicar.
+- **Fecha y hora del despliegue:** 16/11/2026; los logs de Nginx del servicio `parcial2-frontend` muestran el arranque a las 15:23:37 (hora del servidor).
 - **Proyecto EasyPanel:** `totones`.
-- **Servicios:** `parcial2-web` (frontend), `parcial2-api` (API), `parcial2-db` (PostgreSQL).
+- **Servicios:** `parcial2-frontend` (frontend), `parcial2-api` (API), `parcial2-db` (PostgreSQL).
+
+Verificación inicial observada: `GET /` → 200 con el HTML de El Tintero;
+`GET /api/health/ready` → 200 `{"estado":"listo"}`; `GET /api/libros/` → 200
+con los datos del seed. La evidencia funcional completa se registra en
+`evidencia/G-global.md`.
 
 No se incluyen contraseñas, cadenas de conexión privadas ni valores reales de
 `DATABASE_URL`.

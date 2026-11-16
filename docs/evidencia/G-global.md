@@ -69,13 +69,31 @@ La API recibió las peticiones a través de `/api/`, sin CORS.
 - «Ver detalle» consultó `GET /api/ventas/{id}` y mostró fecha, cliente, renglones e importes.
 - Se cambió el precio del libro 1 a `30000.00` con `PATCH /api/libros/1`; después de recargar, el detalle de la venta 1 siguió mostrando `25000.00` y total `77000.00`.
 
-## Pendiente de la VPS
+## Verificación pública (16/11/2026)
 
-- Publicar el servicio `frontend` en EasyPanel con Build Path `/frontend` y `API_UPSTREAM`.
-- Configurar el dominio HTTPS y verificar `/api/health/ready` desde fuera.
-- Repetir G-01 a G-07 contra la URL pública y adjuntar capturas/salidas sanitizadas.
-- Registrar URL, fecha y hora del despliegue público en `DEPLOY.md`.
-- Regenerar el ZIP después de publicar para que la entrega tenga la URL y la evidencia finales.
+La aplicación quedó publicada en `https://parcial2.maurodip.me` mediante el servicio
+`parcial2-frontend` de EasyPanel, con proxy `/api/` hacia `totones_parcial2-api:8000`.
+
+| Comprobación | Resultado observado |
+|---|---|
+| `GET /` | 200 con el HTML de El Tintero |
+| `GET /api/health/ready` | 200 `{"estado":"listo"}` |
+| `GET /api/libros/` | 200 con los libros del seed |
+| Catálogo público, página 1 | 3 tarjetas |
+| Catálogo público, página 2 | 1 tarjeta; paginación operativa |
+| Búsqueda `Rayuela` y detalle | Coincidencia y autor Julio Cortázar con rol/orden |
+| Consola del navegador | Sin errores |
+
+G-01 queda cubierto en la URL pública. G-07 queda parcialmente cubierto: HTTPS,
+build y salud funcionan; falta la prueba de persistencia tras un redespliegue.
+G-02 a G-06 deben ejecutarse todavía con datos ficticios desde la URL pública.
+
+## Pendiente
+
+- Ejecutar G-02 a G-06 contra la URL pública con datos ficticios y registrar las salidas.
+- Probar G-07 completo: redesplegar el frontend o la API y verificar que los datos sigan disponibles.
+- Regenerar el ZIP después de completar esas pruebas para que la entrega tenga la evidencia final.
+
 
 ## Empaquetado
 
