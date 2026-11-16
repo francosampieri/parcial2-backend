@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 a C-07 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 `imagen-docker` quedó implementado y archivado con 6/6 tareas y spec sincronizada; la evidencia local está en `docs/evidencia/C07-local.md`. C-08 `despliegue-vps-y-entrega` está desplegado, publicado y entregado, con 8/13 tareas y límites de verificación documentados; el ZIP fue subido al campus el 16/11/2026 y no se conserva en el repositorio. C-09 `integracion-frontend` está implementado y verificado localmente con 276 pruebas; la publicación manual del frontend en la VPS queda pendiente. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-07 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 `imagen-docker` quedó implementado y archivado con 6/6 tareas y spec sincronizada; la evidencia local está en `docs/evidencia/C07-local.md`. C-08 `despliegue-vps-y-entrega` está desplegado, publicado y entregado, con 8/13 tareas y límites de verificación documentados; el ZIP fue subido al campus el 16/11/2026 y no se conserva en el repositorio. C-09 `integracion-frontend` está publicado en https://parcial2.maurodip.me y verificado con G-01 a G-07, incluida la persistencia tras redespliegue. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -276,7 +276,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
 ## FASE 5 — Evaluación global
 
 ### [C-09] `integracion-frontend`
-- **Estado**: `[~]` implementado y verificado localmente (16/11/2026); 25/25 tareas. La publicación manual del frontend en EasyPanel queda pendiente. Evidencia local: [G-global](docs/evidencia/G-global.md). Paquete reproducible en `dist/Parcial_Global_totones.zip`.
+- **Estado**: `[x]` publicado en https://parcial2.maurodip.me y verificado con G-01 a G-07 (16/11/2026); 27/27 tareas. Evidencia: [G-global](docs/evidencia/G-global.md). Paquete reproducible en `dist/Parcial_Global_totones.zip`.
 - **Scope**:
   - Incorporar el frontend del primer parcial a `frontend/public/` y reemplazar `localStorage` por un cliente HTTP con base `/api`.
   - Conectar catálogo, búsqueda, paginación y detalle con autores; altas de libros y clientes; ventas con importes devueltos por la API; historial y detalle.

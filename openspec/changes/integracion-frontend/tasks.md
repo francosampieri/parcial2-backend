@@ -45,6 +45,8 @@
 - [x] 7.2 Actualizar DEPLOY.md con el servicio frontend, Build Path, `API_UPSTREAM`, dominio, proxy y diagnóstico 502, dejando la ejecución en VPS como paso manual posterior.
 - [x] 7.3 Ejecutar la suite completa del backend, validar OpenSpec y registrar en `docs/evidencia/G-global.md` la evidencia local; dejar la evidencia pública como pendiente de la publicación manual.
 - [x] 7.4 Crear `scripts/empaquetar_global.py` y verificar que `dist/Parcial_Global_totones.zip` contenga `frontend/`, `backend/`, `README.md`, `DEPLOY.md` y `evidencia/`, con ambos Dockerfiles y los `env.example`, sin `.env`, `.venv`, `__pycache__`, `.git` ni dependencias instaladas.
+- [x] 7.5 Ejecutar G-02 a G-06 contra la URL pública con datos ficticios y registrar IDs, estados e importes en `docs/evidencia/G-global.md`; verificar libro 201/409, cliente 201/409, venta 201, precio histórico y rechazos 409/422.
+- [x] 7.6 Completar G-07: redesplegar el frontend o la API desde EasyPanel y verificar que los datos de la venta 4 y el libro 5 sigan disponibles; luego regenerar el ZIP final.
 
 ## Nota de verificación local (16/11/2026)
 
@@ -52,6 +54,9 @@
 - OpenSpec: change válido y 8/8 specs válidas.
 - Docker: imagen del frontend construida; `/`, `/api/health/ready` y `/api/libros/` respondieron 200 a través de Nginx.
 - Navegador: catálogo, altas, venta, historial, 409/422 y precio histórico verificados.
-- Empaquetado: `dist/Parcial_Global_totones.zip`, 114 archivos y 127.9 KiB; estructura y exclusiones verificadas con el script.
-- La publicación en EasyPanel y la evidencia pública quedan como operación manual posterior. Regenerar el ZIP después de publicar.
+- Empaquetado: `dist/Parcial_Global_totones.zip`, 114 archivos; estructura y exclusiones verificadas con el script.
+- Publicación: `https://parcial2.maurodip.me` responde 200; el proxy `/api/` responde 200.
+- Pruebas públicas: G-01 a G-07 completadas. Libro ID 5, cliente ID 2, venta ID 4 con total 29000.00; tras el redespliegue del frontend se mantuvieron el libro, la venta, la salud y el catálogo.
+- Regenerar el ZIP final y hacer commit/push de la evidencia.
+
 
