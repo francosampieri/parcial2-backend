@@ -3,7 +3,7 @@
 > Índice canónico de todos los changes del proyecto **Librería — totones (2PRO1)**.
 > Cada change agrupa una unidad técnica coherente, con el tamaño habitual de implementación y sin fragmentación artificial por motivos pedagógicos.
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
-> Estado actual: C-01 a C-05 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 `imagen-docker` quedó implementado y archivado con 6/6 tareas y spec sincronizada; la evidencia local está en `docs/evidencia/C07-local.md`. C-08 continúa planificado. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
+> Estado actual: C-01 a C-07 implementados, verificados y archivados; C-03 `catalogo-y-autorias` quedó archivado con 18/18 tareas funcionales marcadas y cuatro desviaciones TDD documentadas; la funcionalidad pasó 205 pruebas; C-05 `ventas-y-comprobantes` se archivó con 20/20 tareas, specs sincronizadas y 269 pruebas; C-06 `validacion-integral-y-datos` quedó implementado y archivado con 9/9 tareas; su spec está sincronizada, con 274 pruebas aprobadas y 39 solicitudes HTTP verificadas. C-07 `imagen-docker` quedó implementado y archivado con 6/6 tareas y spec sincronizada; la evidencia local está en `docs/evidencia/C07-local.md`. C-08 `despliegue-vps-y-entrega` está desplegado, publicado y entregado, con 8/13 tareas y límites de verificación documentados; el ZIP fue subido al campus el 16/11/2026 y no se conserva en el repositorio. El CLI de OpenSpec conserva la fuente de verdad de los artefactos y tareas.
 
 ---
 
@@ -251,7 +251,7 @@ No hay frontend al que asignar un agente. La dependencia de datos y el pedido de
   - [09 — Decisiones y supuestos](knowledge-base/09_decisiones_y_supuestos.md) §DD-05
 
 ### [C-08] `despliegue-vps-y-entrega`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[~]` desplegado, publicado y entregado (16/11/2026); 8/13 tareas y límites de verificación documentados. La API sigue accesible en https://parcial2-api.maurodip.me/; evidencia en [C08](docs/evidencia/C08-vps-parcial.md). Pendiente de cierre: continuidad de `calculadora`, estado `healthy` de D-02, código 201 del POST en VPS y actualización durable.
 - **Scope**:
   - Inspeccionar y confirmar VPS autorizada, PostgreSQL/base/usuario, puerto/URL y proyecto ya alojado. Resolver PA-01/PA-02 y fecha límite del campus; preparar para revisión los comandos exactos y cambios de configuración necesarios, sin publicar credenciales ni interrumpir el otro proyecto.
   - Tras revisión explícita de las operaciones ALTO, construir o transferir la imagen y correrla con docker run, puerto asignado, variables fuera del repo/imagen, SQL_ECHO=false y restart unless-stopped. Si DB está en host Linux, revisar dirección/puertos y --add-host=host.docker.internal:host-gateway sin asumir configuración del servidor.

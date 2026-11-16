@@ -1,6 +1,12 @@
-# C-08 — evidencia parcial en VPS (12 de noviembre de 2026)
+# C-08 — evidencia en VPS (12 al 16 de noviembre de 2026)
 
-Registro de salidas comunicadas por Franco durante el despliegue manual. URL definitiva: `https://parcial2-api.maurodip.me`; también se usó la URL temporal `https://totones-parcial2-api.fqtdaq.easypanel.host`. No se incluyen credenciales.
+Registro de salidas comunicadas por Franco durante el despliegue manual y de la revalidación externa del 16/11/2026. URL definitiva: `https://parcial2-api.maurodip.me`; también se usó la URL temporal `https://totones-parcial2-api.fqtdaq.easypanel.host`. No se incluyen credenciales.
+
+## Entrega
+
+- El usuario confirmó el 16/11/2026 que `Parcial_Cap1a4_totones.zip` **ya fue entregado al campus**. El archivo no se conserva en el workspace.
+- La fecha y hora exactas de la subida no quedaron registradas en este repositorio; no se inventan.
+- La instancia publicada sigue respondiendo y fue revalidada el 16/11/2026.
 
 ## Topología observada
 
@@ -29,7 +35,35 @@ Registro de salidas comunicadas por Franco durante el despliegue manual. URL def
 - Para D-01, el usuario inspeccionó en la VPS `python:3.12-alpine`: tamaño `74.098.022` bytes, menor al límite de 100 MB de la imagen base. No confundirlo con el tamaño de la imagen final de la API.
 - Para D-07, la primera búsqueda de `Comprobante emitido para venta 2` no devolvió coincidencias. Se corrigió el registro del aviso en el commit `0792fce` para emitirlo también mediante el logger de Uvicorn. Franco implementó esa versión desde GitHub en EasyPanel, volvió a aplicar `docker service update --endpoint-mode dnsrr totones_parcial2-api` tras el despliegue y confirmó que `/health/ready` funcionó. Luego creó la venta 3 (`2026-11-13T02:17:58.607949Z`) con los libros 1 × 2 y 4 × 1, total `77000.00`; el comando `docker service logs --since 10m totones_parcial2-api 2>&1 | grep -F "Comprobante emitido"` devolvió `INFO: Comprobante emitido para venta 3 por 77000.00`. La respuesta de venta se compartió antes de consultar el log. El código HTTP de POST no fue aportado.
 
+## Verificación externa del 16/11/2026
+
+Comprobaciones de sólo lectura ejecutadas contra la URL pública:
+
+| Petición | Resultado observado |
+|---|---|
+| `GET https://parcial2-api.maurodip.me/health/ready` | 200 `{"estado":"listo"}` |
+| `GET https://parcial2-api.maurodip.me/libros/` | 200 con los cuatro libros del seed (Rayuela y siguientes) |
+| `GET https://parcial2-api.maurodip.me/ventas/` | 200 con ventas de total `77000.00` |
+| `GET https://parcial2-api.maurodip.me/clientes/1/ventas` | 200 con las ventas del cliente del seed |
+
+No se ejecutó un `POST /ventas/` nuevo para no alterar los datos de la instancia publicada. El cuerpo de la venta 2 y de la venta 3 ya estaba documentado; su código HTTP 201 no fue capturado en la evidencia original.
+
+## Estado de D-01 a D-07
+
+| Caso | Estado | Sustento |
+|---|---|---|
+| D-01 imagen base menor a 100 MB | Verificado en VPS | `python:3.12-alpine` = 74.098.022 bytes |
+| D-02 construcción, arranque y estado saludable | Parcial | EasyPanel construyó desde GitHub y el servicio responde; no se capturó el estado explícito `healthy` ni el detalle de build |
+| D-03 comprobación externa | Parcial | ready y catálogo 200; ventas GET 200; falta el código 201 del POST |
+| D-04 persistencia tras recrear la API | Verificado en VPS | Venta 2 conservó `77000.00` tras `docker service update --force` |
+| D-05 fallo sin `DATABASE_URL` | Verificado en VPS | `ConfigurationError`, salida 3, contenedor descartable |
+| D-06 proceso no root | Verificado en VPS | `id -u` = 100 |
+| D-07 aviso posterior de comprobante | Verificado en VPS | Log de venta 3 por `77000.00` |
+
 ## Pendiente
 
-No presentar lo anterior como cierre de D-01 a D-07. Faltan continuidad de la calculadora, procedimiento de actualización durable y evidencia completa de construcción/estado saludable en VPS. El aviso posterior a la venta ya quedó demostrado. El dominio definitivo, la imagen base menor de 100 MB, persistencia de la venta, proceso sin root y fallo sin URL sí fueron observados en VPS. Las pruebas equivalentes de C-07 constan por separado como **locales**.
-
+- Continuidad del producto `calculadora`: no se verificó su recuperación tras los cambios de Traefik/nginx.
+- Evidencia explícita de D-02 en VPS: estado `healthy` y detalle de construcción.
+- Código HTTP 201 del `POST /ventas/` en la VPS (el cuerpo y el total sí están documentados).
+- Procedimiento de actualización durable: el ajuste `dnsrr` puede perderse en un nuevo despliegue de EasyPanel.
+- El ZIP fue entregado al campus, pero no se conserva en el workspace para una nueva inspección.

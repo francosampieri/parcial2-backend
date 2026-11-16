@@ -46,3 +46,11 @@ La API ya tiene imagen Docker construida y verificada localmente (C-07), healthc
 - ¿Qué acceso a la interfaz de EasyPanel y a comandos SSH tiene el usuario? No necesita compartir host, usuario ni claves con el agente; se determina mediante los resultados de los pasos guiados.
 - ¿Qué nombres de servicio, dominio o puerto libre y hostname interno se usarán dentro de `totones`? Se determinan con inventario y revisión antes de escribir.
 - ¿Cuál es el plazo del campus y hasta cuándo deben conservar la instancia accesible? Se confirma antes de calendarizar la entrega.
+
+## Resultado observado
+
+- **Servicios:** `parcial2-api` y `parcial2-db` dentro del proyecto existente `totones`; PostgreSQL privado en `totones_parcial2-db:5432`.
+- **URL pública:** `https://parcial2-api.maurodip.me`, revalidada el 16/11/2026.
+- **Publicación:** EasyPanel construyó desde GitHub; no se usaron `docker build` ni `docker run` para el servicio publicado. D-05 sí usó un contenedor descartable sin red ni configuración.
+- **Entrega:** `Parcial_Cap1a4_totones.zip` fue subido al campus el 16/11/2026, según confirmación del usuario; no se conserva en el repositorio.
+- **Límites:** no se verificó la continuidad de `calculadora`; D-02 no tiene evidencia explícita de estado `healthy`; no se capturó el código 201 del POST en la VPS; el ajuste `dnsrr` no es un procedimiento de actualización durable.

@@ -3,7 +3,7 @@
 API académica de Franco Sampieri, Mauro Di Pietro, Tomas Martinez y Renzo Victoria.
 C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpora los modelos y tablas del dominio; C-03 incorpora las operaciones del catálogo. C-04 incorpora las rutas de clientes y su perfil opcional.
 
-La API está publicada en https://parcial2-api.maurodip.me/ (salud: `/health/ready`; documentación: `/docs`). La ruta de salud respondió `{"estado":"listo"}` por HTTPS. La [guía de despliegue](DEPLOY.md) y la [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) describen la imagen, la base separada y las verificaciones realizadas.
+La API está publicada en https://parcial2-api.maurodip.me/ (salud: `/health/ready`; documentación: `/docs`). Fue revalidada el 16/11/2026 y la ruta de salud respondió `{"estado":"listo"}` por HTTPS. La [guía de despliegue](DEPLOY.md) y la [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) describen la imagen, la base separada y las verificaciones realizadas.
 
 ## Preparación local
 
@@ -200,7 +200,7 @@ Strict TDD organiza el desarrollo: prueba conductual RED, implementación mínim
 
 ## Continuación y fuentes
 
-Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Clientes corresponde a C-04; ventas a C-05; validación integral/seed a C-06; contenedor a C-07 y publicación revisada a C-08. La entrega final es `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1.
+Consultar [CHANGES.md](CHANGES.md) para el alcance y las dependencias de los ocho changes, la [KB](knowledge-base/README.md) para requisitos y [AGENTS.md](AGENTS.md) para las reglas confirmadas. Clientes corresponde a C-04; ventas a C-05; validación integral/seed a C-06; contenedor a C-07 y publicación revisada a C-08. La entrega `Parcial_Cap1a4_totones.zip`, del grupo totones, curso 2PRO1, fue subida al campus por el grupo el 16/11/2026; el archivo no se conserva en este repositorio.
 
 La evidencia real de C-01 y sus ciclos TDD está en [TDD-C01](docs/evidencia/TDD-C01.md): 51 pruebas pasaron en PostgreSQL17 privado, con servidor Uvicorn real y recuperación tras caída de la base. La disponibilidad de wheels Windows/musl fue comprobada; el build Alpine se verifica en C-07.
 ## Operaciones del catálogo
