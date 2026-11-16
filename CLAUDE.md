@@ -65,7 +65,7 @@ La referencia anterior describe su uso como artefacto local: el archivo existe e
 
 ## Roadmap de Changes
 
-[CHANGES.md](CHANGES.md) contiene scope, dependencias, gobernanza y lecturas previas. Son **8 changes en 4 fases**, todavía planificados al generar estas instrucciones.
+[CHANGES.md](CHANGES.md) contiene scope, dependencias, gobernanza y lecturas previas. Son **9 changes en 5 fases**: los ocho del parcial y C-09 para la evaluación global del frontend.
 
 | ID | Nombre | Dependencias |
 |---|---|---|
@@ -77,6 +77,7 @@ La referencia anterior describe su uso como artefacto local: el archivo existe e
 | C-06 | `validacion-integral-y-datos` | C-05 |
 | C-07 | `imagen-docker` | C-06 |
 | C-08 | `despliegue-vps-y-entrega` | C-07 |
+| C-09 | `integracion-frontend` | C-05 y C-08 |
 
 C-03 y C-04 admiten paralelismo; ambas ramas son necesarias antes de ventas. El grafo tiene siete etapas secuenciales; sin duraciones medidas no se promete un plazo mínimo. Los gates son dependencias técnicas, no bloqueos rígidos del workflow OPSX.
 

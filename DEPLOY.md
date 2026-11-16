@@ -11,6 +11,83 @@
 - **Actualización:** publicar el commit en GitHub, pulsar **Implementar** en `totones/parcial2-api`, comprobar `/health/ready` y, si EasyPanel restablece el modo de red que falla en esta VPS, ejecutar `docker service update --endpoint-mode dnsrr totones_parcial2-api`. La base permanece en su servicio propio, por lo que la venta 2 conservó el total `77000.00` tras recrear la API. El commit `0792fce` hizo visible el aviso D-07 en los logs y fue implementado así.
 - **Límites conocidos:** no se comprobó la continuidad del dominio de `calculadora`; el ajuste `dnsrr` puede perderse en un nuevo despliegue de EasyPanel; no se capturó el estado explícito `healthy` ni el código HTTP 201 del POST de venta. La evidencia distingue estos puntos como pendientes y no los declara aprobados.
 
+## Publicación manual del frontend (evaluación global)
+
+El frontend se publica como un **segundo App** dentro del mismo proyecto `totones`, sin crear un cuarto proyecto ni tocar `parcial2-db`. La ejecución es manual en EasyPanel.
+
+### Preparación del repositorio
+
+El frontend vive en `frontend/` de este repositorio, con:
+
+```text
+frontend/
+  Dockerfile
+  .dockerignore
+  default.conf.template
+  public/
+```
+
+EasyPanel debe construir desde la rama `main` con **Build Path `/frontend`**, builder **Dockerfile** y ruta `Dockerfile`.
+
+### Servicio frontend
+
+1. En `totones`, elegir **New Service → App** y nombrarlo `parcial2-web`.
+2. Source: repositorio `francosampieri/parcial2-backend`, rama `main`, Build Path `/frontend`.
+3. Environment:
+
+```text
+API_UPSTREAM=totones_parcial2-api:8000
+```
+
+Sin `http://` y sin barra final. El nombre interno debe ser el que muestra EasyPanel para el servicio de la API.
+
+4. Domains: host público del frontend (por ejemplo `parcial2.maurodip.me`), path `/`, puerto interno `80`, HTTPS activado.
+5. Deploy.
+
+El backend no se vuelve a desplegar para este cambio. La API puede conservar su dominio público durante la verificación; después se puede retirar si se quiere dejar sólo el acceso interno, como sugiere la guía global.
+
+### Proxy y CORS
+
+`default.conf.template` reenvía `/api/` a `http://${API_UPSTREAM}/`. La barra final elimina el prefijo: `/api/libros/` llega a FastAPI como `/libros/`. El navegador usa el mismo origen del frontend, así que no hace falta CORS.
+
+### DNS y verificación
+
+Si no existe un comodín `*.maurodip.me`, crear un registro **A** para el subdominio del frontend apuntando a la IP de la VPS. Luego:
+
+```sh
+curl -i https://parcial2.maurodip.me/
+curl -i https://parcial2.maurodip.me/api/health/ready
+curl -i https://parcial2.maurodip.me/api/libros/
+```
+
+Esperado: HTML 200, salud 200 `{"estado":"listo"}` y catálogo 200 con los datos del seed.
+
+### Diagnóstico de 502
+
+1. Comprobar la API directa: `curl -fsS https://parcial2-api.maurodip.me/health/ready`.
+2. Revisar logs del servicio frontend.
+3. Desde un contenedor de la VPS, probar el nombre interno:
+
+```sh
+wget -qO- http://totones_parcial2-api:8000/health/ready
+```
+
+4. Si el nombre VIP falla pero responde `tasks.totones_parcial2-api:8000`, usar ese valor temporalmente en `API_UPSTREAM`.
+5. Reaplicar el ajuste ya conocido y revalidar:
+
+```sh
+docker service update --endpoint-mode dnsrr totones_parcial2-api
+```
+
+Ese ajuste puede perderse en cada redeploy de la API; hay que comprobarlo después de actualizar.
+
+### Actualización y vuelta atrás
+
+- **Actualizar:** push a `main`, Deploy del servicio frontend y, si cambió la API, redeploy del backend; revalidar `/api/health/ready` y el `dnsrr` si reaparece el 502.
+- **Volver atrás:** redeploy del commit anterior del frontend o eliminar sólo `parcial2-web`. La API y la base PostgreSQL no se tocan.
+
+La evidencia funcional local de G-01 a G-07 está en [`docs/evidencia/G-global.md`](docs/evidencia/G-global.md). La evidencia pública se completa después de ejecutar estos pasos manuales.
+
 La [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) detalla comandos, resultados observados y límites de verificación. Los comandos `docker build` y `docker run` siguientes son **ejemplos para una instalación directa**, no el método EasyPanel efectivamente usado. La consigna solicita explícitamente `docker run`; esta diferencia queda declarada para la corrección.
 
 ## Qué se ejecuta
@@ -111,3 +188,17 @@ Estas casillas requieren una ejecución real; los archivos por sí solos no prue
 | Fecha, comandos y capturas o salidas sanitizadas de VPS | Evidencia parcial de C-08 registrada; D-07 se verificó en logs con venta 3 tras el commit 0792fce; recuperación de calculadora sigue pendiente |
 
 No presentar resultados locales como evidencia de VPS. Antes de compartir logs o capturas, quitar URL de conexión, usuarios, contraseñas, direcciones privadas y otros secretos.
+
+## Empaquetado de la evaluación global
+
+Para armar el ZIP con la estructura pedida por la cátedra:
+
+```sh
+.venv/bin/python scripts/empaquetar_global.py
+```
+
+Genera `dist/Parcial_Global_totones.zip` con `frontend/`, `backend/`, `README.md`,
+`DEPLOY.md` y `evidencia/`. El script excluye `.env`, `.venv`, `__pycache__`,
+`.git`, `tmp/` y dependencias instaladas. Volver a ejecutarlo después de publicar
+el frontend para que la URL y la fecha queden en la entrega.
+

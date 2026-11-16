@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clientes — El Tintero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="contenedor">
+    <h1>El Tintero</h1>
+    <nav class="nav-principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="libros.html">Libros</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="historial.html">Historial</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section>
+      <h2>Clientes</h2>
+      <form id="clientes-form" action="#" method="post" novalidate>
+        <p class="form-group">
+          <label for="clientes-nombre">Nombre completo</label>
+          <input id="clientes-nombre" name="nombre" type="text">
+        </p>
+        <p class="form-group">
+          <label for="clientes-email">Email</label>
+          <input id="clientes-email" name="email" type="email">
+        </p>
+        <p class="form-acciones">
+          <button type="submit" class="btn">Registrar cliente</button>
+        </p>
+      </form>
+      <div id="clientes-cargando" class="mensaje mensaje-info" aria-live="polite" hidden>Cargando clientes…</div>
+      <div id="clientes-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <div id="clientes-vacio" class="mensaje mensaje-vacio" aria-live="polite" hidden></div>
+      <div id="clientes-mensaje-ok" class="mensaje mensaje-exito" aria-live="polite" hidden></div>
+      <div id="clientes-mensaje-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <h3>Buscar cliente por ID</h3>
+      <p class="form-group">
+        <label for="clientes-buscar-id">ID de cliente</label>
+        <input id="clientes-buscar-id" name="buscar-id" type="number" min="1" step="1">
+      </p>
+      <p class="form-acciones">
+        <button id="clientes-buscar" type="button" class="btn btn--secundario">Buscar cliente</button>
+      </p>
+      <div id="clientes-busqueda-mensaje" class="mensaje mensaje-info" aria-live="polite" hidden></div>
+      <div class="tabla-contenedor">
+        <table id="clientes-tabla" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre completo</th>
+              <th scope="col">Email</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="ayuda">La tabla muestra los clientes creados o consultados en esta sesión. La API no expone un listado general.</p>
+    </section>
+  </main>
+  <footer class="contenedor">
+    <p>El Tintero — Frontend conectado a la API de la librería.</p>
+  </footer>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/formato.js"></script>
+  <script defer src="js/altas.js"></script>
+</body>
+</html>

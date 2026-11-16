@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Libros — El Tintero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="contenedor">
+    <h1>El Tintero</h1>
+    <nav class="nav-principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="libros.html">Libros</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="historial.html">Historial</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section>
+      <h2>Libros</h2>
+      <form id="libros-form" action="#" method="post" novalidate>
+        <p class="form-group">
+          <label for="libros-titulo">Título</label>
+          <input id="libros-titulo" name="titulo" type="text">
+        </p>
+        <p class="form-group">
+          <label for="libros-isbn">ISBN</label>
+          <input id="libros-isbn" name="isbn" type="text">
+        </p>
+        <p class="form-group">
+          <label for="libros-precio">Precio</label>
+          <input id="libros-precio" name="precio" type="number" min="0" step="0.01">
+        </p>
+        <p class="form-group">
+          <label for="libros-stock">Stock</label>
+          <input id="libros-stock" name="stock" type="number" min="0" step="1" value="0">
+        </p>
+        <p class="form-group">
+          <label for="libros-editorial">Editorial</label>
+          <select id="libros-editorial" name="editorial"></select>
+        </p>
+        <p class="form-group">
+          <label for="libros-genero">Género</label>
+          <select id="libros-genero" name="genero"></select>
+        </p>
+        <fieldset>
+          <legend>Autores</legend>
+          <div class="autorias-controles">
+            <p class="form-group">
+              <label for="libros-autor-id">ID de autor</label>
+              <input id="libros-autor-id" name="autor-id" type="number" min="1" step="1">
+            </p>
+            <p class="form-group">
+              <label for="libros-autor-rol">Rol</label>
+              <select id="libros-autor-rol" name="autor-rol">
+                <option value="autor">autor</option>
+                <option value="coautor">coautor</option>
+                <option value="traductor">traductor</option>
+                <option value="ilustrador">ilustrador</option>
+              </select>
+            </p>
+            <p class="form-group">
+              <label for="libros-autor-orden">Orden</label>
+              <input id="libros-autor-orden" name="autor-orden" type="number" min="1" step="1" value="1">
+            </p>
+            <p class="form-acciones">
+              <button id="libros-autor-agregar" type="button" class="btn btn--secundario">Agregar autoría</button>
+            </p>
+          </div>
+          <div id="libros-autores-lista" class="autorias-lista"></div>
+          <p class="ayuda">El ID se valida contra la API con GET /autores/{id}.</p>
+        </fieldset>
+        <p class="form-acciones">
+          <button type="submit" class="btn">Registrar libro</button>
+        </p>
+      </form>
+      <div id="libros-cargando" class="mensaje mensaje-info" aria-live="polite" hidden>Cargando libros…</div>
+      <div id="libros-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <div id="libros-vacio" class="mensaje mensaje-vacio" aria-live="polite" hidden></div>
+      <div id="libros-mensaje-ok" class="mensaje mensaje-exito" aria-live="polite" hidden></div>
+      <div id="libros-mensaje-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <div class="tabla-contenedor">
+        <table id="libros-tabla" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Título</th>
+              <th scope="col">ISBN</th>
+              <th scope="col">Editorial</th>
+              <th scope="col">Género</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Detalle</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <section id="libros-detalle" class="detalle-libro" aria-live="polite" hidden></section>
+    </section>
+  </main>
+  <footer class="contenedor">
+    <p>El Tintero — Frontend conectado a la API de la librería.</p>
+  </footer>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/formato.js"></script>
+  <script defer src="js/altas.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ventas — El Tintero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="contenedor">
+    <h1>El Tintero</h1>
+    <nav class="nav-principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="libros.html">Libros</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="historial.html">Historial</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section>
+      <h2>Ventas</h2>
+      <p class="form-group">
+        <label for="ventas-cliente-id">ID de cliente</label>
+        <input id="ventas-cliente-id" name="cliente-id" type="number" min="1" step="1">
+      </p>
+      <p class="form-acciones">
+        <button id="ventas-cliente-buscar" type="button" class="btn btn--secundario">Buscar cliente</button>
+        <span id="ventas-cliente-nombre" class="ayuda" aria-live="polite"></span>
+      </p>
+      <p class="form-group">
+        <label for="ventas-libro">Libro</label>
+        <select id="ventas-libro" name="libro">
+          <option value="">Seleccionar libro</option>
+        </select>
+      </p>
+      <p class="form-group">
+        <label for="ventas-cantidad">Cantidad</label>
+        <input id="ventas-cantidad" name="cantidad" type="number" min="1" value="1">
+      </p>
+      <p class="form-acciones">
+        <button id="ventas-agregar" type="button" class="btn">Agregar renglón</button>
+      </p>
+      <div class="tabla-contenedor">
+        <table id="venta-renglones" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Libro</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Precio unitario</th>
+              <th scope="col">Subtotal</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p id="ventas-renglones-vacio" class="mensaje mensaje-vacio" hidden>Todavía no agregaste renglones.</p>
+      </div>
+      <div id="ventas-resumen" class="venta-resumen">
+        <p>Total: <span id="ventas-total">$0,00</span></p>
+        <p>
+          <button id="ventas-confirmar" type="button" class="btn">Confirmar venta</button>
+        </p>
+      </div>
+      <div id="ventas-mensaje-ok" class="mensaje mensaje-exito" aria-live="polite" hidden></div>
+      <div id="ventas-mensaje-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <section id="ventas-confirmada" class="detalle-libro" aria-live="polite" hidden></section>
+    </section>
+  </main>
+  <footer class="contenedor">
+    <p>El Tintero — Frontend conectado a la API de la librería.</p>
+  </footer>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/formato.js"></script>
+  <script defer src="js/ventas.js"></script>
+</body>
+</html>

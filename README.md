@@ -5,6 +5,45 @@ C-01 construye configuración, ciclo de vida y consultas de salud. C-02 incorpor
 
 La API está publicada en https://parcial2-api.maurodip.me/ (salud: `/health/ready`; documentación: `/docs`). Fue revalidada el 16/11/2026 y la ruta de salud respondió `{"estado":"listo"}` por HTTPS. La [guía de despliegue](DEPLOY.md) y la [evidencia de VPS](docs/evidencia/C08-vps-parcial.md) describen la imagen, la base separada y las verificaciones realizadas.
 
+## Frontend integrado
+
+El frontend de la evaluación global vive en [`frontend/`](frontend/README.md). Reutiliza las pantallas del primer parcial y consulta la API real mediante la base `/api`; no usa `localStorage` para los datos de la librería.
+
+```sh
+docker build -t libreria-frontend ./frontend
+docker run --rm --name libreria-frontend \
+  -p 127.0.0.1:8080:80 \
+  --add-host=host.docker.internal:host-gateway \
+  -e API_UPSTREAM=host.docker.internal:8000 \
+  libreria-frontend
+```
+
+El contenedor sirve `frontend/public/` con Nginx y reenvía `/api/` al backend, por lo que no necesita CORS. La publicación manual en EasyPanel se describe en [DEPLOY.md](DEPLOY.md).
+
+### Empaquetado para la entrega global
+
+El paquete reproducible se genera con:
+
+```sh
+.venv/bin/python scripts/empaquetar_global.py
+```
+
+Produce `dist/Parcial_Global_totones.zip` con esta estructura:
+
+```text
+Parcial_Global_totones/
+  frontend/
+  backend/
+  README.md
+  DEPLOY.md
+  evidencia/
+```
+
+El script incluye ambos Dockerfiles, `frontend/default.conf.template`, los
+`env.example` y la evidencia; excluye `.env`, `.venv`, `__pycache__`, `.git`,
+`tmp/` y dependencias instaladas. Regenerarlo después de la publicación en la
+VPS para que `DEPLOY.md` y la evidencia tengan la URL y fecha reales.
+
 ## Preparación local
 
 Requisitos: Python 3.12 o superior con `venv`/`pip` y una base PostgreSQL 16 o superior accesible. Se recomienda Python 3.12 para mantener la misma rama que la futura imagen del parcial. No es necesario Docker para desarrollar C-01.

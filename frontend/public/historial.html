@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Historial — El Tintero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="contenedor">
+    <h1>El Tintero</h1>
+    <nav class="nav-principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="libros.html">Libros</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="historial.html">Historial</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section>
+      <h2>Historial</h2>
+      <div id="historial-cargando" class="mensaje mensaje-info" aria-live="polite" hidden>Cargando historial…</div>
+      <div id="historial-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <div id="historial-vacio" class="mensaje mensaje-vacio" aria-live="polite" hidden></div>
+      <div class="tabla-contenedor">
+        <table id="historial-tabla" class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Identificador</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Cliente</th>
+              <th scope="col">Total</th>
+              <th scope="col">Detalle</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="historial-paginacion" class="paginacion" hidden>
+        <button id="historial-anterior" type="button" class="btn btn--secundario">Anterior</button>
+        <span id="historial-pagina" aria-live="polite"></span>
+        <button id="historial-siguiente" type="button" class="btn btn--secundario">Siguiente</button>
+      </div>
+      <section id="historial-detalle" class="detalle-libro" aria-live="polite" hidden></section>
+    </section>
+  </main>
+  <footer class="contenedor">
+    <p>El Tintero — Frontend conectado a la API de la librería.</p>
+  </footer>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/formato.js"></script>
+  <script defer src="js/historial.js"></script>
+</body>
+</html>

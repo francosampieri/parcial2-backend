@@ -1,0 +1,467 @@
+/* ==========================================================================
+   El Tintero — styles.css
+   Paleta papel/tinta/vino · CSS3 nativo · mobile-first
+   Secciones: 1) tokens  2) reset/base  3) layout  4) componentes
+              5) utilidades/estados  6) media queries
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1) TOKENS (:root)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Color — paleta papel/tinta/vino */
+  --color-fondo: #FBFAF7;
+  --color-superficie: #FFFFFF;
+  --color-texto: #1F1B16;
+  --color-texto-suave: #5C564C;
+  --color-borde: #D9D4CB;
+  --color-acento: #6B2737;
+  --color-acento-suave: #F3E7EA;
+  --color-acento-oscuro: #561F2D;
+  --color-error: #B3261E;
+  --color-error-suave: #FBEAE9;
+  --color-error-oscuro: #8F1D18;
+  --color-exito: #1E7A3C;
+  --color-exito-suave: #E6F4EA;
+
+  /* Tipografía — familias del sistema, sin CDNs */
+  --fuente-titulo: Georgia, "Times New Roman", serif;
+  --fuente-base: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --interlineado: 1.5;
+
+  /* Espaciado */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 0.75rem;
+  --espacio-4: 1rem;
+  --espacio-5: 1.5rem;
+  --espacio-6: 2rem;
+
+  /* Forma y sombra */
+  --radio: 6px;
+  --sombra: 0 1px 3px rgba(31, 27, 22, 0.12);
+
+  /* Medidas */
+  --ancho-contenido: 72rem;
+}
+
+/* --------------------------------------------------------------------------
+   2) RESET / BASE
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-base);
+  font-size: 1rem;
+  line-height: var(--interlineado);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulo);
+  line-height: 1.25;
+  color: var(--color-texto);
+  margin-top: 0;
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+
+p {
+  margin: 0 0 var(--espacio-3);
+}
+
+a {
+  color: var(--color-acento);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   3) LAYOUT
+   -------------------------------------------------------------------------- */
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho-contenido);
+  margin-inline: auto;
+  padding-inline: var(--espacio-4);
+}
+
+header.contenedor {
+  padding-block: var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+  margin-bottom: var(--espacio-5);
+}
+
+main.contenedor {
+  padding-bottom: var(--espacio-5);
+}
+
+footer.contenedor {
+  padding-block: var(--espacio-4);
+  border-top: 1px solid var(--color-borde);
+  margin-top: var(--espacio-6);
+  color: var(--color-texto-suave);
+  font-size: 0.9rem;
+}
+
+.nav-principal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-4);
+  margin: var(--espacio-3) 0 0;
+  padding: 0;
+}
+
+.nav-principal a {
+  display: inline-block;
+  padding: var(--espacio-1) var(--espacio-2);
+  border-radius: var(--radio);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-principal a:hover {
+  background: var(--color-acento-suave);
+}
+
+/* --------------------------------------------------------------------------
+   4) COMPONENTES
+   -------------------------------------------------------------------------- */
+
+/* --- Botones --- */
+.btn {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-superficie);
+  background: var(--color-acento);
+  border: 1px solid var(--color-acento);
+  border-radius: var(--radio);
+  padding: var(--espacio-2) var(--espacio-4);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: var(--color-acento-oscuro);
+  border-color: var(--color-acento-oscuro);
+}
+
+.btn--secundario {
+  color: var(--color-acento);
+  background: var(--color-superficie);
+  border-color: var(--color-acento);
+}
+
+.btn--secundario:hover {
+  background: var(--color-acento-suave);
+  border-color: var(--color-acento);
+}
+
+.btn--peligro {
+  color: var(--color-superficie);
+  background: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.btn--peligro:hover {
+  background: var(--color-error-oscuro);
+  border-color: var(--color-error-oscuro);
+}
+
+/* --- Grilla y tarjetas del catálogo --- */
+.grilla-tarjetas {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-4);
+}
+
+.card {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: var(--espacio-4);
+}
+
+.libro-tarjeta h3 {
+  color: var(--color-acento);
+  margin-bottom: var(--espacio-2);
+}
+
+.libro-tarjeta p {
+  margin-bottom: var(--espacio-2);
+}
+
+.libro-tarjeta ul {
+  margin: 0 0 var(--espacio-2);
+  padding-left: var(--espacio-5);
+}
+
+/* --- Formularios --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  margin-bottom: var(--espacio-4);
+  max-width: 28rem;
+}
+
+.form-group label {
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  font: inherit;
+  color: var(--color-texto);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-2) var(--espacio-3);
+  width: 100%;
+}
+
+.form-group input:hover,
+.form-group select:hover {
+  border-color: var(--color-acento);
+}
+
+.form-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+  margin-bottom: var(--espacio-4);
+  max-width: 28rem;
+}
+
+fieldset {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-3) var(--espacio-4);
+  margin: 0 0 var(--espacio-4);
+  max-width: 28rem;
+}
+
+legend {
+  font-weight: 600;
+  padding-inline: var(--espacio-2);
+}
+
+fieldset p {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin-bottom: var(--espacio-2);
+}
+
+fieldset p:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Resumen de venta --- */
+.venta-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: var(--espacio-4);
+  margin-bottom: var(--espacio-4);
+}
+
+.venta-resumen p {
+  margin: 0;
+}
+
+.venta-resumen span {
+  font-weight: 700;
+  color: var(--color-acento);
+}
+
+/* --- Tablas --- */
+.tabla-contenedor {
+  overflow-x: auto;
+  margin-bottom: var(--espacio-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+}
+
+.tabla {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+}
+
+.tabla th,
+.tabla td {
+  border-bottom: 1px solid var(--color-borde);
+  padding: var(--espacio-2) var(--espacio-3);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.tabla thead th {
+  background: var(--color-acento-suave);
+  font-family: var(--fuente-titulo);
+}
+
+.tabla tbody tr:last-child th,
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* --------------------------------------------------------------------------
+   5) UTILIDADES / ESTADOS
+   -------------------------------------------------------------------------- */
+
+/* --- Mensajes de estado (texto primero, color complementario) --- */
+.mensaje {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  padding: var(--espacio-3) var(--espacio-4);
+  margin-bottom: var(--espacio-4);
+}
+
+.mensaje-error {
+  border-color: var(--color-error);
+  background: var(--color-error-suave);
+  color: var(--color-error);
+}
+
+.mensaje-exito {
+  border-color: var(--color-exito);
+  background: var(--color-exito-suave);
+  color: var(--color-exito);
+}
+
+.mensaje-info {
+  border-color: var(--color-acento);
+  background: var(--color-acento-suave);
+  color: var(--color-texto);
+}
+
+.mensaje-vacio {
+  border-color: var(--color-borde);
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
+}
+
+/* --- Foco visible (R-06) --- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 2px;
+}
+
+/* Fallback para navegadores sin soporte de :focus-visible */
+@supports not selector(:focus-visible) {
+  a:focus,
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 3px solid var(--color-acento);
+    outline-offset: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6) MEDIA QUERIES (mobile-first, solo min-width)
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .grilla-tarjetas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-group,
+  .form-acciones,
+  fieldset {
+    max-width: 36rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grilla-tarjetas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .contenedor {
+    padding-inline: var(--espacio-6);
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
+}
+
+/* Integración con la API */
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.detalle-libro {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #d7d0c4;
+  border-radius: 0.75rem;
+  background: #fffdf8;
+}
+
+.autorias-controles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.autorias-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.autoria-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ayuda {
+  color: #5c554a;
+  font-size: 0.9rem;
+}

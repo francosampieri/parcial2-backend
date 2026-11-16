@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo — El Tintero</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="contenedor">
+    <h1>El Tintero</h1>
+    <nav class="nav-principal">
+      <a href="catalogo.html">Catálogo</a>
+      <a href="libros.html">Libros</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="ventas.html">Ventas</a>
+      <a href="historial.html">Historial</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section>
+      <h2>Catálogo</h2>
+      <form id="catalogo-buscador" action="#" method="get">
+        <p class="form-group">
+          <label for="catalogo-titulo">Título</label>
+          <input id="catalogo-titulo" name="titulo" type="search">
+        </p>
+        <p class="form-acciones">
+          <button type="submit" class="btn">Buscar por título</button>
+          <button type="reset" class="btn btn--secundario">Limpiar búsqueda</button>
+        </p>
+      </form>
+      <div id="catalogo-cargando" class="mensaje mensaje-info" aria-live="polite" hidden>Cargando catálogo…</div>
+      <div id="catalogo-error" class="mensaje mensaje-error" aria-live="polite" hidden></div>
+      <div id="catalogo-vacio" class="mensaje mensaje-vacio" aria-live="polite" hidden></div>
+      <div id="catalogo-sin-resultados" class="mensaje mensaje-info" aria-live="polite" hidden></div>
+      <div id="catalogo-lista" class="grilla-tarjetas"></div>
+      <div id="catalogo-paginacion" class="paginacion" hidden>
+        <button id="catalogo-anterior" type="button" class="btn btn--secundario">Anterior</button>
+        <span id="catalogo-pagina" aria-live="polite"></span>
+        <button id="catalogo-siguiente" type="button" class="btn btn--secundario">Siguiente</button>
+      </div>
+      <section id="catalogo-detalle" class="detalle-libro" aria-live="polite" hidden></section>
+    </section>
+  </main>
+  <footer class="contenedor">
+    <p>El Tintero — Frontend conectado a la API de la librería.</p>
+  </footer>
+  <script defer src="js/api.js"></script>
+  <script defer src="js/formato.js"></script>
+  <script defer src="js/catalogo.js"></script>
+</body>
+</html>
