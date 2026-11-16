@@ -1,10 +1,10 @@
-# Spec Delta
+# frontend-integration Specification
 
 ## Purpose
 
 Permitir que las pantallas del primer parcial consulten y modifiquen la API real de la librería, mostrando estados, paginación, importes históricos y errores del servidor.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Cliente HTTP único y rutas de la API
 
@@ -73,15 +73,3 @@ La pantalla de historial SHALL listar `GET /ventas/` con `limit` y `offset`, y S
 #### Scenario: Precio histórico
 - **WHEN** se modifica el precio de un libro después de una venta
 - **THEN** el detalle de la venta anterior sigue mostrando el precio y subtotal registrados
-
-### Requirement: Contenedor Nginx del frontend
-
-El frontend SHALL incluir un Dockerfile basado en Nginx que sirva `public/` en el puerto 80 y una plantilla que reenvíe `/api/` a `API_UPSTREAM` con barra final. La configuración SHALL recibir el upstream por variable de entorno y SHALL NOT requerir CORS cuando el frontend y la API se publican bajo el mismo origen.
-
-#### Scenario: Proxy local
-- **WHEN** el contenedor se ejecuta con `API_UPSTREAM=host.docker.internal:8000`
-- **THEN** `/api/health/ready` llega a `GET /health/ready` del backend y responde 200
-
-#### Scenario: Build reproducible
-- **WHEN** se construye la imagen desde `frontend/`
-- **THEN** Nginx sirve los archivos de `public/` y la plantilla de proxy se instala en el contenedor
